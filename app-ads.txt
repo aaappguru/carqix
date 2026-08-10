@@ -3,7 +3,8 @@
 # Domain: carqix.com
 # ============================================================
 
-OWNERDOMAIN=carqix.com
+#OWNERDOMAIN=carqix.com
+OWNERDOMAIN=com.aaapp.appguru.myusedcarsaleuk
 MANAGERDOMAIN=pubpower.io
 
 # ------------------------------------------------------------
