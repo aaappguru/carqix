@@ -6,6 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>CarQix US - Automotive Companion</title>
     <meta name="description" content="US Automotive Companion Platform - Buy, Sell, Value Cars, Compare Finance, Insurance, Roadside Assistance & Smart Calculators." />
+    <link rel="canonical" href="https://carqix.com/" />
+    <script>
+      // Clean up any stale legacy service workers from previous site deployments
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for (var reg of registrations) { reg.unregister(); }
+        });
+      }
+    </script>
   </head>
   <body class="bg-[#F4F6FA] text-[#0F172A] antialiased selection:bg-blue-600 selection:text-white">
     <div id="root"></div>

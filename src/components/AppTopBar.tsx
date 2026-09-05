@@ -57,8 +57,8 @@ export const AppTopBar: React.FC<AppTopBarProps> = ({
   const isBackNeeded = showBackButton !== undefined ? showBackButton : currentRoute !== 'home';
 
   return (
-    <header className="sticky top-0 z-40 bg-[#0A192F] text-white border-b border-slate-800 shadow-md">
-      <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+    <header className="sticky top-0 z-40 bg-[#0A192F] text-white border-b border-slate-800 shadow-md w-full">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 h-16 flex items-center justify-between">
         {/* Left Side: Back button or Logo mark */}
         <div className="flex items-center gap-3">
           {isBackNeeded ? (
