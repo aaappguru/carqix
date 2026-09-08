@@ -869,6 +869,16 @@ export const PARTS_PROVIDERS: ProviderInfo[] = [
   }
 ];
 
+export const PROVIDERS: ProviderInfo[] = [
+  ...VALUATION_PROVIDERS,
+  ...SELLING_PROVIDERS,
+  ...HISTORY_PROVIDERS,
+  ...FINANCE_PROVIDERS,
+  ...INSURANCE_PROVIDERS,
+  ...BREAKDOWN_PROVIDERS,
+  ...PARTS_PROVIDERS
+];
+
 export const ARTICLES: GuideArticle[] = [
   {
     id: 'guide_1',

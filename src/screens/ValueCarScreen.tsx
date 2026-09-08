@@ -3,14 +3,19 @@ import { DollarSign, Sparkles, CheckCircle2, Calculator, ExternalLink, RefreshCw
 import { useApp } from '../context/AppContext';
 import { HeroBanner } from '../components/HeroBanner';
 import { PartnerCard } from '../components/PartnerCard';
-import { VALUATION_PROVIDERS, POPULAR_MAKES, AFFILIATE_URLS } from '../data/automotiveData';
+import { RegionDataProvider } from '../data/regionDataProvider';
 
 export const ValueCarScreen: React.FC = () => {
-  const { openExternalLink, navigate, saveItem } = useApp();
+  const { openExternalLink, navigate, saveItem, region, regionConfig } = useApp();
+
+  const isUk = region === 'uk';
+  const isCa = region === 'ca';
+  const popularMakes = RegionDataProvider.getPopularMakes(region);
+  const valuationProviders = RegionDataProvider.getProvidersByCategory(region, 'VALUATION');
 
   const [year, setYear] = useState('2020');
-  const [make, setMake] = useState('Toyota');
-  const [model, setModel] = useState('Camry');
+  const [make, setMake] = useState(isUk ? 'Ford' : 'Toyota');
+  const [model, setModel] = useState(isUk ? 'Focus' : 'Camry');
   const [mileage, setMileage] = useState('45000');
   const [condition, setCondition] = useState<'EXCELLENT' | 'GOOD' | 'FAIR' | 'POOR'>('GOOD');
   
@@ -26,15 +31,16 @@ export const ValueCarScreen: React.FC = () => {
     const currentYear = 2026;
     const carYear = parseInt(year) || 2020;
     const age = Math.max(0, currentYear - carYear);
-    const miles = parseInt(mileage) || 50000;
+    const miles = parseInt(mileage) || 45000;
 
-    // Baseline rough calculation for instant feedback
-    let base = 32000 * Math.pow(0.85, age);
+    // Currency baseline multiplier
+    const baseNew = isUk ? 26000 : 32000;
+    let base = baseNew * Math.pow(0.85, age);
     
     // Mileage adjustment
-    const normalMiles = age * 12000;
-    const diffMiles = miles - normalMiles;
-    base -= diffMiles * 0.08;
+    const normalDistance = age * (isCa ? 18000 : 12000);
+    const diffDistance = miles - normalDistance;
+    base -= diffDistance * (isUk ? 0.06 : 0.08);
 
     // Condition adjustment
     if (condition === 'EXCELLENT') base *= 1.1;
@@ -42,7 +48,7 @@ export const ValueCarScreen: React.FC = () => {
     else if (condition === 'FAIR') base *= 0.88;
     else base *= 0.75;
 
-    base = Math.max(1500, Math.round(base / 100) * 100);
+    base = Math.max(isUk ? 1000 : 1500, Math.round(base / 100) * 100);
 
     const privateParty = Math.round(base * 1.15);
     const tradeInLow = Math.round(base * 0.9);
@@ -62,17 +68,21 @@ export const ValueCarScreen: React.FC = () => {
     saveItem({
       itemType: 'CALCULATION',
       title: `${year} ${make} ${model} Valuation`,
-      subtitle: `Private Party: $${estimatedValue.privateParty.toLocaleString()} | Trade-in: $${estimatedValue.tradeInLow.toLocaleString()}`,
-      detailDataJson: JSON.stringify({ year, make, model, mileage, condition, estimatedValue })
+      subtitle: `Private Party: ${regionConfig.currencySymbol}${estimatedValue.privateParty.toLocaleString()} | Trade-in: ${regionConfig.currencySymbol}${estimatedValue.tradeInLow.toLocaleString()}`,
+      detailDataJson: JSON.stringify({ year, make, model, mileage, condition, estimatedValue, region })
     });
   };
 
   return (
     <div className="space-y-6 pb-12">
       <HeroBanner
-        title="Car Valuation & True Market Value®"
-        subtitle="Get instant mathematical price ranges for private sales, dealer trade-ins, and verified Edmunds TMV® appraisals."
-        badgeText="US Market Pricing Data"
+        title={`Car Valuation & ${isUk ? 'Forecourt Market Value' : 'True Market Value®'}`}
+        subtitle={
+          isUk
+            ? 'Get instant mathematical price ranges for private sales, dealer part-exchange, and AutoTrader forecourt valuations in GBP (£).'
+            : 'Get instant mathematical price ranges for private sales, dealer trade-ins, and verified market appraisals.'
+        }
+        badgeText={`${regionConfig.shortName} Pricing Data`}
       />
 
       {/* Quick Interactive Estimator */}
@@ -103,7 +113,7 @@ export const ValueCarScreen: React.FC = () => {
                 onChange={(e) => setMake(e.target.value)}
                 className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
               >
-                {POPULAR_MAKES.filter(m => m !== 'All Makes').map((m) => (
+                {popularMakes.filter(m => m !== 'All Makes').map((m) => (
                   <option key={m} value={m}>{m}</option>
                 ))}
               </select>
@@ -113,7 +123,7 @@ export const ValueCarScreen: React.FC = () => {
               <label className="text-[11px] font-semibold text-slate-600 block mb-1">Model</label>
               <input
                 type="text"
-                placeholder="e.g. Camry, Civic, F-150"
+                placeholder={isUk ? 'e.g. Focus, Golf, Qashqai' : 'e.g. Camry, Civic, F-150'}
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
                 className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
@@ -121,7 +131,9 @@ export const ValueCarScreen: React.FC = () => {
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-600 block mb-1">Mileage (Miles)</label>
+              <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+                Mileage ({regionConfig.distanceUnit})
+              </label>
               <input
                 type="number"
                 min="0"
@@ -158,71 +170,84 @@ export const ValueCarScreen: React.FC = () => {
             className="w-full h-11 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-emerald-600/15 transition-all"
           >
             <RefreshCw className="w-4 h-4" />
-            <span>Calculate Valuation Range</span>
+            <span>Calculate {regionConfig.shortName} Market Valuation</span>
           </button>
         </form>
 
-        {/* Results Banner */}
+        {/* Calculated Results */}
         {estimatedValue && (
-          <div className="mt-4 pt-4 border-t border-slate-100 space-y-3 animate-in fade-in">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-700">Estimated Values for {year} {make} {model}:</span>
-              <button
-                onClick={handleSaveEstimate}
-                className="text-xs font-semibold text-blue-600 hover:text-blue-700"
-              >
-                Save to Bookmarks
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-              <div className="bg-emerald-50/70 p-3.5 rounded-2xl border border-emerald-100">
-                <span className="text-[10px] font-bold uppercase text-emerald-800 block">Private Party Sale</span>
-                <div className="text-lg font-black text-emerald-950">${estimatedValue.privateParty.toLocaleString()}</div>
-                <span className="text-[10px] text-emerald-700">Recommended listing price</span>
+          <div className="pt-4 border-t border-slate-100 space-y-4 animate-in fade-in duration-200">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block mb-1">
+                  Private Party Sale
+                </span>
+                <span className="text-lg font-black text-emerald-950">
+                  {regionConfig.currencySymbol}{estimatedValue.privateParty.toLocaleString()}
+                </span>
               </div>
 
-              <div className="bg-blue-50/70 p-3.5 rounded-2xl border border-blue-100">
-                <span className="text-[10px] font-bold uppercase text-blue-800 block">Dealer Trade-In</span>
-                <div className="text-lg font-black text-blue-950">${estimatedValue.tradeInLow.toLocaleString()} - ${estimatedValue.tradeInHigh.toLocaleString()}</div>
-                <span className="text-[10px] text-blue-700">Instant cash offer basis</span>
+              <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-200/80">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-800 block mb-1">
+                  {isUk ? 'Part-Exchange' : 'Dealer Trade-In'}
+                </span>
+                <span className="text-lg font-black text-blue-950">
+                  {regionConfig.currencySymbol}{estimatedValue.tradeInLow.toLocaleString()} - {regionConfig.currencySymbol}{estimatedValue.tradeInHigh.toLocaleString()}
+                </span>
               </div>
 
-              <div className="bg-slate-100/70 p-3.5 rounded-2xl border border-slate-200">
-                <span className="text-[10px] font-bold uppercase text-slate-700 block">Dealer Retail</span>
-                <div className="text-lg font-black text-slate-900">${estimatedValue.dealerRetail.toLocaleString()}</div>
-                <span className="text-[10px] text-slate-600">Lot certified price</span>
+              <div className="p-3.5 rounded-2xl bg-purple-50/70 border border-purple-200/80">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-purple-800 block mb-1">
+                  {isUk ? 'Forecourt Retail' : 'Dealer Retail'}
+                </span>
+                <span className="text-lg font-black text-purple-950">
+                  {regionConfig.currencySymbol}{estimatedValue.dealerRetail.toLocaleString()}
+                </span>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80 flex flex-col justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 block mb-1">
+                  Action
+                </span>
+                <button
+                  onClick={handleSaveEstimate}
+                  className="w-full py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-sm transition-all"
+                >
+                  Save Result
+                </button>
               </div>
             </div>
           </div>
         )}
       </div>
 
-      {/* Official Appraisal Partners */}
-      <div>
-        <h2 className="text-xs font-black uppercase tracking-wider text-slate-500 mb-3">
-          Verified US Appraisal Providers
-        </h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {VALUATION_PROVIDERS.map((p) => (
-            <PartnerCard
-              key={p.id}
-              name={p.name}
-              description={p.description}
-              rating={p.rating}
-              reviewsCount={p.reviewsCount}
-              benefits={p.benefits}
-              badge={p.badge || p.keyRateOrFeature}
-              ctaText={`Appraise on ${p.name}`}
-              onContinueClick={() => {
-                const url = AFFILIATE_URLS[p.partnerKey] || 'https://www.edmunds.com/appraisal/';
-                openExternalLink(url, p.name, p.description);
-              }}
-            />
-          ))}
+      {/* Official Valuation Partners */}
+      {valuationProviders.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="text-xs font-black uppercase tracking-wider text-slate-500">
+            Official Valuation Portals ({regionConfig.name})
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {valuationProviders.map((provider) => (
+              <PartnerCard
+                key={provider.id}
+                name={provider.name}
+                category={provider.category}
+                description={provider.description}
+                rating={provider.rating}
+                reviewsCount={provider.reviewsCount}
+                benefits={provider.benefits}
+                badge={provider.badge}
+                ctaText={`Appraise on ${provider.name}`}
+                onContinueClick={() => {
+                  const targetUrl = RegionDataProvider.getProviderUrl(provider, region);
+                  openExternalLink(targetUrl, provider.name, provider.description);
+                }}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

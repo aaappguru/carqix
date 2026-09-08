@@ -13,45 +13,65 @@ import {
   BookOpen,
   CheckCircle,
   Clock,
-  Layers
+  Layers,
+  MapPin,
+  ExternalLink
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { HeroBannerSlider } from '../components/HeroBanner';
 import { PartnerCard } from '../components/PartnerCard';
-import { MARKETPLACES, ARTICLES, POPULAR_MAKES, US_STATES } from '../data/automotiveData';
+import { RegionSwitcher } from '../components/RegionSwitcher';
+import { RegionDataProvider } from '../data/regionDataProvider';
 import { SearchUrlBuilder } from '../utils/searchUrlBuilder';
 
 export const HomeScreen: React.FC = () => {
-  const { navigate, openExternalLink } = useApp();
+  const { navigate, openExternalLink, region, regionConfig } = useApp();
 
   // Quick Search Bar state
   const [selectedMake, setSelectedMake] = useState('All Makes');
-  const [zipCode, setZipCode] = useState('');
+  const [postalCode, setPostalCode] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
+
+  const isUk = region === 'uk';
+  const isCa = region === 'ca';
+  const isUs = region === 'us';
+
+  const popularMakes = RegionDataProvider.getPopularMakes(region);
+  const marketplaces = RegionDataProvider.getMarketplaces(region);
+  const featuredMarketplaces = marketplaces.slice(0, 4);
+  const articles = RegionDataProvider.getArticles(region);
+
+  const defaultSearchPartnerKey = RegionDataProvider.getDefaultSearchPartnerKey(region);
+  const defaultSearchPartnerName = RegionDataProvider.getDefaultSearchPartnerName(region);
 
   const handleQuickSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const url = SearchUrlBuilder.buildPartnerSearchUrl('auctiondirectusa', {
+    const url = SearchUrlBuilder.buildPartnerSearchUrl(defaultSearchPartnerKey, {
       make: selectedMake === 'All Makes' ? '' : selectedMake,
       model: '',
       minPrice: '',
       maxPrice,
       minYear: '',
       maxYear: '',
-      zipCode,
+      zipCode: postalCode,
       radiusMiles: '50',
       bodyType: '',
       transmission: '',
       fuelType: ''
-    });
-    openExternalLink(url, `Auction Direct USA ${selectedMake} Search`, 'Searching nationwide US inventory');
+    }, region);
+
+    openExternalLink(
+      url, 
+      `${defaultSearchPartnerName} ${selectedMake !== 'All Makes' ? selectedMake : ''} Search`, 
+      `Searching verified inventory across ${regionConfig.name}`
+    );
   };
 
   const quickTools = [
     {
       id: 'loan',
-      title: 'Auto Loan Calc',
-      subtitle: 'Estimate monthly rates',
+      title: isUk ? 'PCP & HP Calc' : isCa ? 'Auto Loan (CA$)' : 'Auto Loan Calc',
+      subtitle: isUk ? 'Monthly PCP / HP rates' : 'Estimate monthly rates',
       icon: Calculator,
       route: 'calculator_detail/loan',
       color: 'text-blue-600',
@@ -59,8 +79,8 @@ export const HomeScreen: React.FC = () => {
     },
     {
       id: 'value',
-      title: 'Car Valuation',
-      subtitle: 'True Market Value®',
+      title: isUk ? 'Free Valuation' : 'Car Valuation',
+      subtitle: isUk ? 'Forecourt & trade-in' : 'True Market Value®',
       icon: DollarSign,
       route: 'value_car',
       color: 'text-emerald-600',
@@ -68,8 +88,8 @@ export const HomeScreen: React.FC = () => {
     },
     {
       id: 'history',
-      title: 'VIN History',
-      subtitle: 'Accidents & recalls',
+      title: isUk ? 'GOV.UK MOT Check' : isCa ? 'CARFAX Canada' : 'VIN History',
+      subtitle: isUk ? 'Test history & advisories' : isCa ? 'Provincial liens & damage' : 'Accidents & recalls',
       icon: FileSearch,
       route: 'vehicle_history',
       color: 'text-indigo-600',
@@ -78,7 +98,7 @@ export const HomeScreen: React.FC = () => {
     {
       id: 'advice',
       title: 'Buyer Guide',
-      subtitle: '10-pt inspection tips',
+      subtitle: isUk ? 'V5C & inspection tips' : '10-pt inspection tips',
       icon: BookOpen,
       route: 'buying_advice',
       color: 'text-amber-600',
@@ -86,10 +106,30 @@ export const HomeScreen: React.FC = () => {
     }
   ];
 
-  const featuredMarketplaces = MARKETPLACES.slice(0, 4);
+  const priceOptions = isUk ? [
+    { value: '3000', label: '£3,000' },
+    { value: '5000', label: '£5,000' },
+    { value: '8000', label: '£8,000' },
+    { value: '10000', label: '£10,000' },
+    { value: '15000', label: '£15,000' },
+    { value: '20000', label: '£20,000' },
+    { value: '30000', label: '£30,000' },
+    { value: '50000', label: '£50,000' }
+  ] : [
+    { value: '10000', label: `${regionConfig.currencySymbol}10,000` },
+    { value: '15000', label: `${regionConfig.currencySymbol}15,000` },
+    { value: '20000', label: `${regionConfig.currencySymbol}20,000` },
+    { value: '25000', label: `${regionConfig.currencySymbol}25,000` },
+    { value: '35000', label: `${regionConfig.currencySymbol}35,000` },
+    { value: '50000', label: `${regionConfig.currencySymbol}50,000` },
+    { value: '75000', label: `${regionConfig.currencySymbol}75,000` }
+  ];
 
   return (
     <div className="space-y-6 pb-12">
+      {/* Global Region Switcher Banner */}
+      <RegionSwitcher variant="banner" />
+
       {/* Hero Carousel */}
       <HeroBannerSlider onNavigate={navigate} />
 
@@ -98,10 +138,13 @@ export const HomeScreen: React.FC = () => {
         <div className="flex items-center justify-between mb-3.5">
           <div className="flex items-center gap-2">
             <Search className="w-4 h-4 text-blue-600" />
-            <h2 className="font-bold text-sm text-[#0A192F]">Quick Used Car Search</h2>
+            <h2 className="font-bold text-sm text-[#0A192F]">
+              Quick {regionConfig.shortName} Car Search
+            </h2>
           </div>
-          <span className="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
-            Millions of US Cars
+          <span className="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+            <span>{regionConfig.flag}</span>
+            <span>{isUk ? '400,000+ UK Listings' : isCa ? 'Canada-wide Inventory' : 'Millions of US Cars'}</span>
           </span>
         </div>
 
@@ -114,38 +157,39 @@ export const HomeScreen: React.FC = () => {
                 onChange={(e) => setSelectedMake(e.target.value)}
                 className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
               >
-                {POPULAR_MAKES.map((make) => (
+                <option value="All Makes">All Popular Makes</option>
+                {popularMakes.map((make) => (
                   <option key={make} value={make}>{make}</option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-600 block mb-1">Max Price ($)</label>
+              <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+                Max Price ({regionConfig.currencySymbol})
+              </label>
               <select
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
                 className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
               >
                 <option value="">Any Price</option>
-                <option value="10000">$10,000</option>
-                <option value="15000">$15,000</option>
-                <option value="20000">$20,000</option>
-                <option value="25000">$25,000</option>
-                <option value="35000">$35,000</option>
-                <option value="50000">$50,000</option>
-                <option value="75000">$75,000</option>
+                {priceOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
               </select>
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-600 block mb-1">ZIP Code</label>
+              <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+                {regionConfig.postalCodeLabel}
+              </label>
               <input
                 type="text"
-                placeholder="e.g. 90210"
-                maxLength={5}
-                value={zipCode}
-                onChange={(e) => setZipCode(e.target.value)}
+                placeholder={regionConfig.postalCodePlaceholder}
+                maxLength={isUk ? 10 : 8}
+                value={postalCode}
+                onChange={(e) => setPostalCode(e.target.value)}
                 className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
               />
             </div>
@@ -157,7 +201,7 @@ export const HomeScreen: React.FC = () => {
               className="flex-1 h-11 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-blue-600/10 transition-all"
             >
               <Search className="w-4 h-4" />
-              <span>Search Edmunds Inventory</span>
+              <span>Search {defaultSearchPartnerName}</span>
             </button>
             <button
               type="button"
@@ -165,7 +209,7 @@ export const HomeScreen: React.FC = () => {
               className="h-11 px-4 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-colors flex items-center gap-1.5"
             >
               <Layers className="w-3.5 h-3.5" />
-              <span>All 10+ Marketplaces</span>
+              <span>All {marketplaces.length} Marketplaces</span>
             </button>
           </div>
         </form>
@@ -175,7 +219,7 @@ export const HomeScreen: React.FC = () => {
       <div>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-xs font-black uppercase tracking-wider text-slate-500">
-            Essential Tools
+            Essential {regionConfig.shortName} Tools
           </h2>
           <button
             onClick={() => navigate('smart_tools')}
@@ -217,14 +261,14 @@ export const HomeScreen: React.FC = () => {
         <div className="flex items-center justify-between mb-3">
           <div>
             <h2 className="text-xs font-black uppercase tracking-wider text-slate-500">
-              Leading US Marketplaces
+              Leading {regionConfig.shortName} Marketplaces
             </h2>
           </div>
           <button
             onClick={() => navigate('buy_cars')}
             className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1"
           >
-            <span>See All Marketplaces</span>
+            <span>See All ({marketplaces.length})</span>
             <ArrowRight className="w-3 h-3" />
           </button>
         </div>
@@ -244,7 +288,7 @@ export const HomeScreen: React.FC = () => {
               onContinueClick={() => {
                 const url = SearchUrlBuilder.buildPartnerSearchUrl(m.webUrlKey, {
                   make: '', model: '', minPrice: '', maxPrice: '', minYear: '', maxYear: '', zipCode: '', radiusMiles: '', bodyType: '', transmission: '', fuelType: ''
-                });
+                }, region);
                 openExternalLink(url, m.name, m.description);
               }}
             />
@@ -255,10 +299,14 @@ export const HomeScreen: React.FC = () => {
       {/* Services Spectrum Banner */}
       <div className="bg-gradient-to-r from-[#0A192F] to-[#1E293B] rounded-3xl p-6 text-white border border-slate-800 shadow-md">
         <h3 className="font-black text-lg text-white mb-1">
-          Complete Automotive Lifecycle
+          {regionConfig.shortName} Motoring Spectrum
         </h3>
         <p className="text-xs text-slate-300 mb-4 max-w-md">
-          Explore trusted US partners across valuation, selling, financing, insurance, and roadside assistance.
+          {isUk
+            ? 'Explore verified UK portals across valuation, selling, PCP/HP finance, insurance, MOT, and breakdown assistance.'
+            : isCa
+            ? 'Explore Canadian services across valuation, selling, auto loans, CARFAX Canada reports, and warranty.'
+            : 'Explore trusted US partners across valuation, selling, financing, insurance, and roadside assistance.'}
         </p>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
@@ -267,8 +315,12 @@ export const HomeScreen: React.FC = () => {
             className="p-3 rounded-xl bg-white/10 hover:bg-white/15 text-left transition-colors border border-white/5"
           >
             <DollarSign className="w-4 h-4 text-emerald-400 mb-1" />
-            <div className="text-xs font-bold text-white">Car Finance</div>
-            <div className="text-[10px] text-slate-300">Bankrate & Lenders</div>
+            <div className="text-xs font-bold text-white">
+              {isUk ? 'Car Finance (PCP/HP)' : 'Car Finance'}
+            </div>
+            <div className="text-[10px] text-slate-300">
+              {isUk ? 'Zuto & AutoTrader' : isCa ? 'Canadian Rates' : 'Bankrate & Lenders'}
+            </div>
           </button>
 
           <button
@@ -277,7 +329,9 @@ export const HomeScreen: React.FC = () => {
           >
             <ShieldCheck className="w-4 h-4 text-blue-400 mb-1" />
             <div className="text-xs font-bold text-white">Car Insurance</div>
-            <div className="text-[10px] text-slate-300">Insurify & Rates</div>
+            <div className="text-[10px] text-slate-300">
+              {isUk ? 'Compare the Market' : 'Compare Top Rates'}
+            </div>
           </button>
 
           <button
@@ -285,8 +339,12 @@ export const HomeScreen: React.FC = () => {
             className="p-3 rounded-xl bg-white/10 hover:bg-white/15 text-left transition-colors border border-white/5"
           >
             <Wrench className="w-4 h-4 text-amber-400 mb-1" />
-            <div className="text-xs font-bold text-white">Roadside Assist</div>
-            <div className="text-[10px] text-slate-300">AAA & Allstate</div>
+            <div className="text-xs font-bold text-white">
+              {isUk ? 'Breakdown Cover' : 'Roadside Assist'}
+            </div>
+            <div className="text-[10px] text-slate-300">
+              {isUk ? 'AA, RAC & Green Flag' : 'AAA & 24/7 Patrols'}
+            </div>
           </button>
 
           <button
@@ -295,16 +353,22 @@ export const HomeScreen: React.FC = () => {
           >
             <Car className="w-4 h-4 text-purple-400 mb-1" />
             <div className="text-xs font-bold text-white">Sell Your Car</div>
-            <div className="text-[10px] text-slate-300">Instant Cash Offers</div>
+            <div className="text-[10px] text-slate-300">
+              {isUk ? 'Motorway & webuyanycar' : 'Instant Cash Offers'}
+            </div>
           </button>
 
           <button
-            onClick={() => navigate('parts_accessories')}
+            onClick={() => navigate('vehicle_history')}
             className="p-3 rounded-xl bg-white/10 hover:bg-white/15 text-left transition-colors border border-white/5"
           >
-            <TrendingUp className="w-4 h-4 text-rose-400 mb-1" />
-            <div className="text-xs font-bold text-white">Auto Parts</div>
-            <div className="text-[10px] text-slate-300">Amazon & RockAuto</div>
+            <FileSearch className="w-4 h-4 text-rose-400 mb-1" />
+            <div className="text-xs font-bold text-white">
+              {isUk ? 'MOT & HPI History' : isCa ? 'CARFAX Canada' : 'VIN History'}
+            </div>
+            <div className="text-[10px] text-slate-300">
+              {isUk ? 'Free GOV.UK Check' : isCa ? 'Accidents & Liens' : 'NMVTIS Reports'}
+            </div>
           </button>
 
           <button
@@ -312,8 +376,10 @@ export const HomeScreen: React.FC = () => {
             className="p-3 rounded-xl bg-white/10 hover:bg-white/15 text-left transition-colors border border-white/5"
           >
             <BookOpen className="w-4 h-4 text-cyan-400 mb-1" />
-            <div className="text-xs font-bold text-white">Buyer Guide</div>
-            <div className="text-[10px] text-slate-300">Inspection Checklist</div>
+            <div className="text-xs font-bold text-white">Buyer Checklist</div>
+            <div className="text-[10px] text-slate-300">
+              {isUk ? 'V5C & MOT Verification' : '10-Point Inspection'}
+            </div>
           </button>
         </div>
       </div>
@@ -322,7 +388,7 @@ export const HomeScreen: React.FC = () => {
       <div>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-xs font-black uppercase tracking-wider text-slate-500">
-            Featured Guides & Advice
+            Featured {regionConfig.shortName} Guides
           </h2>
           <button
             onClick={() => navigate('reviews_guides')}
@@ -334,7 +400,7 @@ export const HomeScreen: React.FC = () => {
         </div>
 
         <div className="space-y-3">
-          {ARTICLES.slice(0, 3).map((article) => (
+          {articles.slice(0, 3).map((article) => (
             <button
               key={article.id}
               onClick={() => navigate(`article_detail/${article.id}`)}

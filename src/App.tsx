@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { AppTopBar } from './components/AppTopBar';
 import { AppBottomBar } from './components/AppBottomBar';
+import { AppFooter } from './components/AppFooter';
 import { ExternalLinkModal } from './components/ExternalLinkModal';
+import { admobService } from './services/admobService';
 
 // Screens
 import { HomeScreen } from './screens/HomeScreen';
@@ -30,6 +32,11 @@ import { TermsScreen } from './screens/TermsScreen';
 
 const MainContent: React.FC = () => {
   const { currentRoute } = useApp();
+
+  useEffect(() => {
+    // Initialize AdMob and prepare interstitial/banner ads on startup
+    admobService.initialize();
+  }, []);
 
   const renderScreen = () => {
     switch (currentRoute) {
@@ -88,11 +95,14 @@ const MainContent: React.FC = () => {
       <AppTopBar />
 
       {/* Main Screen Container with full width layout and responsive padding */}
-      <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 xl:px-12 pt-5 pb-24">
+      <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 xl:px-12 pt-5 pb-8">
         {renderScreen()}
       </main>
 
-      {/* Persistent Bottom Bar for mobile/desktop navigation */}
+      {/* Comprehensive Application Footer */}
+      <AppFooter />
+
+      {/* Persistent Bottom Bar for mobile navigation */}
       <AppBottomBar />
 
       {/* External Verified Link Modal */}

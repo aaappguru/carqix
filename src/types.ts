@@ -1,3 +1,21 @@
+export type RegionId = 'us' | 'uk' | 'ca';
+
+export interface RegionConfig {
+  id: RegionId;
+  name: string;
+  shortName: string;
+  flag: string;
+  currencySymbol: string;
+  currencyCode: string;
+  distanceUnit: 'miles' | 'km';
+  vinOrRegistrationLabel: string;
+  vinOrRegistrationPlaceholder: string;
+  postalCodeLabel: string;
+  postalCodePlaceholder: string;
+  tagline: string;
+  heroSubtitle: string;
+}
+
 export interface PartnerConfig {
   partnerId: string;
   name: string;
@@ -5,6 +23,7 @@ export interface PartnerConfig {
   affiliateUrl: string;
   isEnabled: boolean;
   priority: number;
+  category?: string;
 }
 
 export interface MarketplaceInfo {

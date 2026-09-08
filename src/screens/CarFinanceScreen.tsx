@@ -3,18 +3,34 @@ import { DollarSign, Percent, Calculator, ArrowRight, ShieldCheck } from 'lucide
 import { useApp } from '../context/AppContext';
 import { HeroBanner } from '../components/HeroBanner';
 import { PartnerCard } from '../components/PartnerCard';
-import { FINANCE_PROVIDERS, AFFILIATE_URLS } from '../data/automotiveData';
+import { RegionDataProvider } from '../data/regionDataProvider';
 
 export const CarFinanceScreen: React.FC = () => {
-  const { openExternalLink, navigate } = useApp();
+  const { openExternalLink, navigate, region, regionConfig } = useApp();
+
+  const isUk = region === 'uk';
+  const isCa = region === 'ca';
+  const financeProviders = RegionDataProvider.getProvidersByCategory(region, 'FINANCE');
 
   return (
     <div className="space-y-6 pb-12">
       <HeroBanner
-        title="US Auto Financing & Loan Rates"
-        subtitle="Compare daily auto loan interest rates, pre-qualification lenders, and specialized bad-credit approval networks."
+        title={
+          isUk
+            ? 'UK Car Finance & PCP/HP Rate Comparison'
+            : isCa
+            ? 'Canadian Auto Financing & Loan Rates'
+            : 'US Auto Financing & Loan Rates'
+        }
+        subtitle={
+          isUk
+            ? 'Compare Personal Contract Purchase (PCP), Hire Purchase (HP), and personal bank loan rates with soft search pre-approval.'
+            : isCa
+            ? 'Compare Canadian bank loan rates, dealer financing options, and estimate provincial tax adjustments.'
+            : 'Compare daily auto loan interest rates, pre-qualification lenders, and specialized bad-credit approval networks.'
+        }
         ctaText="Try Loan Calculator"
-        badgeText="Daily Interest Rate Updates"
+        badgeText={`Representative ${regionConfig.currencySymbol} Rates`}
         onCtaClick={() => navigate('calculator_detail/loan')}
       />
 
@@ -27,7 +43,9 @@ export const CarFinanceScreen: React.FC = () => {
           </div>
           <h3 className="text-lg font-black text-white">Know Your Monthly Payment Before Applying</h3>
           <p className="text-xs text-blue-100 max-w-md mt-0.5">
-            Test different down payments, terms (36 to 84 months), and state sales taxes.
+            {isUk
+              ? 'Calculate PCP balloon payments, HP amortization schedules, and interest totals in GBP (£).'
+              : `Test different down payments, terms (36 to 84 months), and local taxes in ${regionConfig.currencyCode}.`}
           </p>
         </div>
         <button
@@ -42,11 +60,11 @@ export const CarFinanceScreen: React.FC = () => {
       {/* Finance Providers Catalog */}
       <div>
         <h2 className="text-xs font-black uppercase tracking-wider text-slate-500 mb-3">
-          Top US Auto Lenders & Rate Comparators
+          Top {regionConfig.shortName} Auto Lenders & Brokers
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {FINANCE_PROVIDERS.map((p) => (
+          {financeProviders.map((p) => (
             <PartnerCard
               key={p.id}
               name={p.name}
@@ -57,8 +75,7 @@ export const CarFinanceScreen: React.FC = () => {
               badge={p.badge || p.keyRateOrFeature}
               ctaText={`Compare on ${p.name}`}
               onContinueClick={() => {
-                const url = AFFILIATE_URLS[p.partnerKey] || 'https://www.bankrate.com/loans/auto-loans/rates/';
-                openExternalLink(url, p.name, p.description);
+                openExternalLink(p.partnerKey, p.name, p.description);
               }}
             />
           ))}

@@ -15,12 +15,18 @@ import {
 import { useApp } from '../context/AppContext';
 import { HeroBanner } from '../components/HeroBanner';
 import { PartnerCard } from '../components/PartnerCard';
-import { MARKETPLACES, POPULAR_MAKES, BODY_TYPES } from '../data/automotiveData';
+import { RegionDataProvider } from '../data/regionDataProvider';
 import { SearchFilterState } from '../types';
 import { SearchUrlBuilder } from '../utils/searchUrlBuilder';
 
 export const BuyCarsScreen: React.FC = () => {
-  const { openExternalLink, isItemSaved, saveItem, removeSavedItem, savedItems } = useApp();
+  const { openExternalLink, isItemSaved, saveItem, removeSavedItem, region, regionConfig } = useApp();
+
+  const isUk = region === 'uk';
+  const isCa = region === 'ca';
+
+  const popularMakes = RegionDataProvider.getPopularMakes(region);
+  const marketplaces = RegionDataProvider.getMarketplaces(region);
 
   const [filter, setFilter] = useState<SearchFilterState>({
     make: 'All Makes',
@@ -55,24 +61,48 @@ export const BuyCarsScreen: React.FC = () => {
   };
 
   const handleSearchPartner = (partnerKey: string, partnerName: string) => {
-    const url = SearchUrlBuilder.buildPartnerSearchUrl(partnerKey, filter);
-    openExternalLink(url, `${partnerName} Inventory`, `Searching with your custom filters`);
+    const url = SearchUrlBuilder.buildPartnerSearchUrl(partnerKey, filter, region);
+    openExternalLink(url, `${partnerName} Inventory`, `Searching with your custom filters on ${partnerName}`);
   };
 
-  const filteredMarketplaces = MARKETPLACES.filter((m) => {
+  const filteredMarketplaces = marketplaces.filter((m) => {
     if (selectedCategory === 'ALL') return true;
     if (selectedCategory === 'POPULAR') return m.isPopular;
-    if (selectedCategory === 'AUCTION') return m.category.includes('Auction') || m.category.includes('Enthusiast');
-    if (selectedCategory === 'CLASSIC') return m.category.includes('Classic');
+    if (selectedCategory === 'AUCTION') return m.category.includes('Auction') || m.category.includes('Enthusiast') || m.category.includes('Classifieds');
     return true;
   });
+
+  const priceOptions = isUk ? [
+    { value: '3000', label: '£3,000' },
+    { value: '5000', label: '£5,000' },
+    { value: '8000', label: '£8,000' },
+    { value: '10000', label: '£10,000' },
+    { value: '15000', label: '£15,000' },
+    { value: '20000', label: '£20,000' },
+    { value: '30000', label: '£30,000' },
+    { value: '50000', label: '£50,000' }
+  ] : [
+    { value: '10000', label: `${regionConfig.currencySymbol}10,000` },
+    { value: '15000', label: `${regionConfig.currencySymbol}15,000` },
+    { value: '20000', label: `${regionConfig.currencySymbol}20,000` },
+    { value: '25000', label: `${regionConfig.currencySymbol}25,000` },
+    { value: '35000', label: `${regionConfig.currencySymbol}35,000` },
+    { value: '50000', label: `${regionConfig.currencySymbol}50,000` },
+    { value: '75000', label: `${regionConfig.currencySymbol}75,000` }
+  ];
 
   return (
     <div className="space-y-6 pb-12">
       <HeroBanner
-        title="Find Used Cars Across Top US Sites"
-        subtitle="Configure your search criteria once, then search live inventory directly across Auction Direct USA, Carsforsale.com, Edmunds, TrueCar, and Cars.com."
-        badgeText="14 Curated Car Buy Marketplaces"
+        title={`Find Used Cars Across Top ${regionConfig.name} Sites`}
+        subtitle={
+          isUk
+            ? 'Configure your vehicle preferences once, then launch live searches directly across AutoTrader UK, carwow, Gumtree Cars, Arnold Clark, and AA Cars.'
+            : isCa
+            ? 'Configure your criteria and launch live searches across AutoTrader.ca, Kijiji Autos, Clutch.ca, AutoCatch.com, Carpages.ca, and Auto123.com.'
+            : 'Configure your search criteria once, then search live inventory directly across Auction Direct USA, Carsforsale.com, Edmunds, TrueCar, and Cars.com.'
+        }
+        badgeText={`${marketplaces.length} Curated ${regionConfig.shortName} Marketplaces`}
       />
 
       {/* Unified Search Filter Box */}
@@ -100,7 +130,8 @@ export const BuyCarsScreen: React.FC = () => {
               onChange={(e) => setFilter({ ...filter, make: e.target.value })}
               className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             >
-              {POPULAR_MAKES.map((make) => (
+              <option value="All Makes">All Makes</option>
+              {popularMakes.map((make) => (
                 <option key={make} value={make}>{make}</option>
               ))}
             </select>
@@ -111,7 +142,7 @@ export const BuyCarsScreen: React.FC = () => {
             <label className="text-[11px] font-semibold text-slate-600 block mb-1">Model</label>
             <input
               type="text"
-              placeholder="e.g. Camry, F-150, Civic"
+              placeholder={isUk ? 'e.g. Golf, Fiesta, Qashqai' : 'e.g. Camry, F-150, Civic'}
               value={filter.model}
               onChange={(e) => setFilter({ ...filter, model: e.target.value })}
               className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
@@ -120,176 +151,90 @@ export const BuyCarsScreen: React.FC = () => {
 
           {/* Max Price */}
           <div>
-            <label className="text-[11px] font-semibold text-slate-600 block mb-1">Max Price ($)</label>
+            <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+              Max Price ({regionConfig.currencySymbol})
+            </label>
             <select
               value={filter.maxPrice}
               onChange={(e) => setFilter({ ...filter, maxPrice: e.target.value })}
               className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             >
               <option value="">Any Max Price</option>
-              <option value="10000">$10,000</option>
-              <option value="15000">$15,000</option>
-              <option value="20000">$20,000</option>
-              <option value="25000">$25,000</option>
-              <option value="30000">$30,000</option>
-              <option value="40000">$40,000</option>
-              <option value="50000">$50,000</option>
-              <option value="75000">$75,000</option>
+              {priceOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
             </select>
           </div>
 
-          {/* ZIP Code */}
+          {/* Postcode / ZIP */}
           <div>
-            <label className="text-[11px] font-semibold text-slate-600 block mb-1">ZIP Code</label>
+            <label className="text-[11px] font-semibold text-slate-600 block mb-1">
+              {regionConfig.postalCodeLabel}
+            </label>
             <input
               type="text"
-              placeholder="e.g. 90210"
-              maxLength={5}
+              placeholder={regionConfig.postalCodePlaceholder}
+              maxLength={isUk ? 10 : 8}
               value={filter.zipCode}
               onChange={(e) => setFilter({ ...filter, zipCode: e.target.value })}
               className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             />
           </div>
-
-          {/* Min Year */}
-          <div>
-            <label className="text-[11px] font-semibold text-slate-600 block mb-1">Min Year</label>
-            <select
-              value={filter.minYear}
-              onChange={(e) => setFilter({ ...filter, minYear: e.target.value })}
-              className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
-            >
-              <option value="">Any Year</option>
-              <option value="2024">2024</option>
-              <option value="2022">2022</option>
-              <option value="2020">2020</option>
-              <option value="2018">2018</option>
-              <option value="2015">2015</option>
-              <option value="2010">2010</option>
-              <option value="2000">2000</option>
-            </select>
-          </div>
-
-          {/* Body Type */}
-          <div>
-            <label className="text-[11px] font-semibold text-slate-600 block mb-1">Body Type</label>
-            <select
-              value={filter.bodyType}
-              onChange={(e) => setFilter({ ...filter, bodyType: e.target.value })}
-              className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
-            >
-              {BODY_TYPES.map((type) => (
-                <option key={type} value={type}>{type}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Radius */}
-          <div>
-            <label className="text-[11px] font-semibold text-slate-600 block mb-1">Search Radius</label>
-            <select
-              value={filter.radiusMiles}
-              onChange={(e) => setFilter({ ...filter, radiusMiles: e.target.value })}
-              className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
-            >
-              <option value="25">Within 25 Miles</option>
-              <option value="50">Within 50 Miles</option>
-              <option value="100">Within 100 Miles</option>
-              <option value="250">Within 250 Miles</option>
-              <option value="nationwide">Nationwide</option>
-            </select>
-          </div>
         </div>
 
-        {/* Multi-Launcher Quick Buttons */}
-        <div className="pt-2">
-          <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-2">
-            One-Click Launch Query on Top Marketplaces:
-          </label>
-          <div className="flex flex-wrap gap-2">
+        {/* Quick Launch Buttons */}
+        <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-2">
+          <span className="text-xs font-bold text-slate-700">Quick Launch Search On:</span>
+          {marketplaces.slice(0, 4).map((m) => (
             <button
-              onClick={() => handleSearchPartner('auctiondirectusa', 'Auction Direct USA')}
-              className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center gap-1.5 shadow-sm transition-all"
+              key={m.id}
+              onClick={() => handleSearchPartner(m.webUrlKey, m.name)}
+              className="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold flex items-center gap-1.5 transition-colors border border-blue-200/60"
             >
-              <span>Auction Direct USA</span>
+              <span>{m.name}</span>
               <ExternalLink className="w-3 h-3" />
             </button>
-
-            <button
-              onClick={() => handleSearchPartner('carsforsale', 'Carsforsale.com')}
-              className="px-3.5 py-2 rounded-xl bg-[#0A192F] hover:bg-slate-800 text-white font-semibold text-xs flex items-center gap-1.5 shadow-sm transition-all"
-            >
-              <span>Carsforsale.com</span>
-              <ExternalLink className="w-3 h-3" />
-            </button>
-
-            <button
-              onClick={() => handleSearchPartner('edmunds', 'Edmunds')}
-              className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs flex items-center gap-1.5 transition-all"
-            >
-              <span>Edmunds TMV®</span>
-              <ExternalLink className="w-3 h-3" />
-            </button>
-
-            <button
-              onClick={() => handleSearchPartner('truecar', 'TrueCar')}
-              className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs flex items-center gap-1.5 transition-all"
-            >
-              <span>TrueCar</span>
-              <ExternalLink className="w-3 h-3" />
-            </button>
-
-            <button
-              onClick={() => handleSearchPartner('cars_com', 'Cars.com')}
-              className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs flex items-center gap-1.5 transition-all"
-            >
-              <span>Cars.com</span>
-              <ExternalLink className="w-3 h-3" />
-            </button>
-          </div>
+          ))}
         </div>
       </div>
 
-      {/* Marketplace Catalog Section */}
-      <div>
-        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-          <h2 className="font-black text-base text-[#0A192F]">
-            Browse All US Auto Marketplaces
-          </h2>
+      {/* Category Tabs */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        {[
+          { id: 'ALL', label: `All Portals (${marketplaces.length})` },
+          { id: 'POPULAR', label: 'Top Rated & Featured' },
+          { id: 'AUCTION', label: isUk ? 'Auctions & Classifieds' : 'Auctions & Classifieds' }
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setSelectedCategory(tab.id)}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+              selectedCategory === tab.id
+                ? 'bg-[#0A192F] text-white shadow-sm'
+                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-          <div className="flex items-center gap-1.5 bg-slate-200/70 p-1 rounded-xl text-xs font-semibold">
-            {['ALL', 'POPULAR', 'AUCTION', 'CLASSIC'].map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1 rounded-lg transition-all ${
-                  selectedCategory === cat
-                    ? 'bg-white text-blue-600 shadow-sm font-bold'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {filteredMarketplaces.map((m) => (
-            <PartnerCard
-              key={m.id}
-              name={m.name}
-              category={m.category}
-              description={m.description}
-              rating={m.rating}
-              reviewsCount={m.reviewsCount}
-              benefits={m.benefits}
-              badge={m.badge}
-              ctaText={`Search on ${m.name}`}
-              onContinueClick={() => handleSearchPartner(m.webUrlKey, m.name)}
-            />
-          ))}
-        </div>
+      {/* Partner Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {filteredMarketplaces.map((m) => (
+          <PartnerCard
+            key={m.id}
+            name={m.name}
+            category={m.category}
+            description={m.description}
+            rating={m.rating}
+            reviewsCount={m.reviewsCount}
+            benefits={m.benefits}
+            badge={m.badge}
+            ctaText={`Search ${m.name}`}
+            onContinueClick={() => handleSearchPartner(m.webUrlKey, m.name)}
+          />
+        ))}
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles, ArrowRight, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useApp } from '../context/AppContext';
 
 interface HeroBannerProps {
   title: string;
@@ -56,7 +57,69 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
 };
 
 export const HeroBannerSlider: React.FC<{ onNavigate: (route: string) => void }> = ({ onNavigate }) => {
-  const slides = [
+  const { region, regionConfig } = useApp();
+  const isUk = region === 'uk';
+  const isCa = region === 'ca';
+
+  const slides = isUk ? [
+    {
+      title: 'Find Your Next Car in the UK',
+      subtitle: 'Compare 400,000+ live listings from AutoTrader UK, carwow, Gumtree, Arnold Clark & AA Cars.',
+      ctaText: 'Browse UK Used Cars',
+      badgeText: 'Smart Search UK',
+      route: 'buy_cars'
+    },
+    {
+      title: 'Calculate PCP & HP Finance Deals',
+      subtitle: 'Accurate monthly PCP payments with balloon values (GMFV), HP loan schedules, and APR interest.',
+      ctaText: 'PCP & HP Calculator',
+      badgeText: 'Finance Engine',
+      route: 'calculator_detail/loan'
+    },
+    {
+      title: 'Check Free GOV.UK MOT History',
+      subtitle: 'Official DVSA test results, failure advisories, mileage rollback alerts, and HPI write-off checks.',
+      ctaText: 'Check Reg / VIN',
+      badgeText: 'Official & Free',
+      route: 'vehicle_history'
+    },
+    {
+      title: 'What Is Your Car Worth in GBP (£)?',
+      subtitle: 'Get instant trade-in, private sale, and forecourt retail valuations from leading UK price guides.',
+      ctaText: 'Value Your Car',
+      badgeText: 'Free UK Valuation',
+      route: 'value_car'
+    }
+  ] : isCa ? [
+    {
+      title: 'Find Your Next Car in Canada',
+      subtitle: 'Compare inventory from AutoTrader.ca, Kijiji Autos, Clutch.ca, AutoCatch & Carpages.ca.',
+      ctaText: 'Browse Canadian Cars',
+      badgeText: 'Coast-to-Coast Search',
+      route: 'buy_cars'
+    },
+    {
+      title: 'Calculate Auto Loan & Provincial Tax',
+      subtitle: 'Accurate monthly & bi-weekly calculations including provincial sales tax (HST/PST/GST).',
+      ctaText: 'CAD Loan Calculator',
+      badgeText: 'Provincial Tax Engine',
+      route: 'calculator_detail/loan'
+    },
+    {
+      title: 'CARFAX Canada History & Liens',
+      subtitle: 'Verify provincial accident reports, odometer records, and prevent inheriting unpaid bank liens.',
+      ctaText: 'Verify Canadian VIN',
+      badgeText: 'Lien & Accident Check',
+      route: 'vehicle_history'
+    },
+    {
+      title: 'What Is Your Car Worth in CAD ($)?',
+      subtitle: 'Instant Canadian Black Book appraisals, trade-in ranges, and instant online cash offer options.',
+      ctaText: 'Get CAD Valuation',
+      badgeText: 'Black Book Estimates',
+      route: 'value_car'
+    }
+  ] : [
     {
       title: 'Find Your Next Car in the USA',
       subtitle: 'Compare millions of new & used listings from Edmunds, CarsDirect, TrueCar, CarGurus & more.',
@@ -96,7 +159,7 @@ export const HeroBannerSlider: React.FC<{ onNavigate: (route: string) => void }>
     return () => clearInterval(timer);
   }, [slides.length]);
 
-  const currentSlide = slides[currentIndex];
+  const currentSlide = slides[currentIndex] || slides[0];
 
   return (
     <div className="relative group">

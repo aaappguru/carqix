@@ -7,34 +7,39 @@ import {
   FileText, 
   BookOpen, 
   Share2, 
-  ExternalLink,
-  ChevronRight,
-  Car,
-  Wrench,
-  DollarSign,
-  Heart
+  ExternalLink, 
+  ChevronRight, 
+  Car, 
+  Wrench, 
+  DollarSign, 
+  Heart,
+  Globe
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { RegionSwitcher } from '../components/RegionSwitcher';
 
 export const MoreScreen: React.FC = () => {
-  const { navigate } = useApp();
+  const { navigate, region, regionConfig } = useApp();
+
+  const isUk = region === 'uk';
+  const isCa = region === 'ca';
 
   const sections = [
     {
       title: 'Automotive Hub',
       items: [
         { label: 'Buying Advice & Checklist', icon: BookOpen, route: 'buying_advice' },
-        { label: 'Auto Parts & Accessories', icon: Wrench, route: 'parts_accessories' },
-        { label: 'Roadside Assistance', icon: ShieldCheck, route: 'breakdown_cover' },
-        { label: 'Sell or Value Your Car', icon: DollarSign, route: 'sell_car' },
+        { label: `${regionConfig.shortName} Parts & Accessories`, icon: Wrench, route: 'parts_accessories' },
+        { label: isUk ? 'Breakdown Cover (AA & RAC)' : isCa ? 'CAA Roadside Assistance' : 'Roadside Assistance (AAA)', icon: ShieldCheck, route: 'breakdown_cover' },
+        { label: isUk ? 'Sell or Value Car (£)' : isCa ? 'Sell or Value Car (CA$)' : 'Sell or Value Your Car', icon: DollarSign, route: 'sell_car' },
       ]
     },
     {
       title: 'Preferences & Help',
       items: [
-        { label: 'App Settings & Default ZIP', icon: Settings, route: 'settings' },
-        { label: 'How to Use CarQix US', icon: HelpCircle, route: 'how_to_use' },
-        { label: 'About CarQix US', icon: Info, route: 'about' },
+        { label: `App Settings & Default ${regionConfig.postalCodeLabel}`, icon: Settings, route: 'settings' },
+        { label: `How to Use ${regionConfig.shortName}`, icon: HelpCircle, route: 'how_to_use' },
+        { label: `About ${regionConfig.shortName}`, icon: Info, route: 'about' },
       ]
     },
     {
@@ -52,6 +57,15 @@ export const MoreScreen: React.FC = () => {
       <div>
         <h1 className="text-xl sm:text-2xl font-black text-[#0A192F] tracking-tight">More Options</h1>
         <p className="text-xs text-slate-500">Settings, guides, app resources, and official documentation</p>
+      </div>
+
+      {/* Global Regional Portal Selector Card */}
+      <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
+        <div className="flex items-center gap-2">
+          <Globe className="w-4 h-4 text-blue-600" />
+          <h2 className="font-bold text-xs uppercase tracking-wider text-slate-700">Switch Country Portal</h2>
+        </div>
+        <RegionSwitcher variant="banner" />
       </div>
 
       {/* Menu Groups */}
@@ -87,8 +101,8 @@ export const MoreScreen: React.FC = () => {
 
       {/* Footer Branding */}
       <div className="text-center py-4 space-y-1 text-xs text-slate-400">
-        <div className="font-bold text-slate-600">CarQix US • Version 1.0.0</div>
-        <div>Your Complete US Automotive Companion</div>
+        <div className="font-bold text-slate-600">{regionConfig.shortName} • Version 1.0.0</div>
+        <div>Your Complete {regionConfig.name} Automotive Companion Platform</div>
       </div>
     </div>
   );

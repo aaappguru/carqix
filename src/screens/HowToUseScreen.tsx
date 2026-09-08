@@ -1,11 +1,80 @@
 import React from 'react';
-import { HelpCircle, Search, Calculator, ShieldCheck, DollarSign, ArrowRight, Bookmark } from 'lucide-react';
+import { HelpCircle, Search, Calculator, ShieldCheck, DollarSign, ArrowRight, Bookmark, Wrench } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 export const HowToUseScreen: React.FC = () => {
-  const { navigate } = useApp();
+  const { navigate, region, regionConfig } = useApp();
 
-  const steps = [
+  const isUk = region === 'uk';
+  const isCa = region === 'ca';
+
+  const steps = isUk ? [
+    {
+      step: '1',
+      title: 'Search UK Dealer & Private Stock',
+      desc: 'Use the Buy Cars screen to set your desired Make, Model, Max Price (£), and Postcode. Tap verified partners (AutoTrader UK, carwow, Arnold Clark, Gumtree, AA Cars) to instantly view matching listings.',
+      icon: Search,
+      actionText: 'Browse UK Cars',
+      route: 'buy_cars'
+    },
+    {
+      step: '2',
+      title: 'Run PCP, HP & VED Tax Calculators',
+      desc: 'Calculate monthly Personal Contract Purchase (PCP) quotes with balloon payments (GMFV), Hire Purchase (HP) schedules, and DVLA Road Tax (VED) bands before negotiating.',
+      icon: Calculator,
+      actionText: 'UK Calculators',
+      route: 'smart_tools'
+    },
+    {
+      step: '3',
+      title: 'Check Free GOV.UK MOT & HPI History',
+      desc: 'Enter any UK Registration Number to view complete official DVSA MOT test passes/fails, advisories, recorded mileage timelines, and check for outstanding finance or write-offs.',
+      icon: ShieldCheck,
+      actionText: 'Check UK Reg Plate',
+      route: 'vehicle_history'
+    },
+    {
+      step: '4',
+      title: 'Compare UK Insurance & Breakdown',
+      desc: 'Compare quotes across 100+ UK insurers via Compare the Market, Confused.com, and secure 24/7 patrol coverage through The AA or RAC.',
+      icon: DollarSign,
+      actionText: 'Insurance & Breakdown',
+      route: 'car_insurance'
+    }
+  ] : isCa ? [
+    {
+      step: '1',
+      title: 'Search Coast-to-Coast Inventory',
+      desc: 'Use the Buy Cars screen to set your Make, Model, Max Price (CA$), and Postal Code. Browse verified inventory on AutoTrader.ca, Kijiji Autos, Clutch.ca, and AutoCatch.',
+      icon: Search,
+      actionText: 'Browse Canadian Cars',
+      route: 'buy_cars'
+    },
+    {
+      step: '2',
+      title: 'Calculate Auto Loan & Provincial Tax',
+      desc: 'Calculate monthly & bi-weekly payments with provincial sales tax (HST in ON/NS/NB, PST/GST in BC/SK/MB/QC, GST in AB) and 5-year depreciation schedules.',
+      icon: Calculator,
+      actionText: 'CAD Loan Tools',
+      route: 'smart_tools'
+    },
+    {
+      step: '3',
+      title: 'Verify CARFAX Canada & Lien Status',
+      desc: 'Enter any 17-digit VIN to verify provincial registration, past insurance accident claims, and run nationwide cross-provincial lien checks.',
+      icon: ShieldCheck,
+      actionText: 'CARFAX Canada Check',
+      route: 'vehicle_history'
+    },
+    {
+      step: '4',
+      title: 'Compare Canadian Insurance & CAA',
+      desc: 'Compare auto insurance quotes on RATESDOTCA and Ratehub to save on provincial premiums, and secure 24/7 roadside assistance with CAA.',
+      icon: DollarSign,
+      actionText: 'View Insurance & CAA',
+      route: 'car_insurance'
+    }
+  ] : [
     {
       step: '1',
       title: 'Search & Compare Inventory',
@@ -43,8 +112,12 @@ export const HowToUseScreen: React.FC = () => {
   return (
     <div className="space-y-6 pb-12">
       <div>
-        <h1 className="text-xl sm:text-2xl font-black text-[#0A192F] tracking-tight">How to Use CarQix US</h1>
-        <p className="text-xs text-slate-500">A step-by-step guide to finding, valuing, and buying used cars in the USA</p>
+        <h1 className="text-xl sm:text-2xl font-black text-[#0A192F] tracking-tight">
+          How to Use {regionConfig.shortName}
+        </h1>
+        <p className="text-xs text-slate-500">
+          A step-by-step guide to finding, valuing, and buying used cars in {regionConfig.name}
+        </p>
       </div>
 
       <div className="space-y-3.5">

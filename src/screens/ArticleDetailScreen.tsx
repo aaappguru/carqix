@@ -1,15 +1,26 @@
 import React from 'react';
 import { Clock, Bookmark, Share2, Tag, ArrowLeft } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { ARTICLES } from '../data/automotiveData';
+import { RegionDataProvider } from '../data/regionDataProvider';
 
 export const ArticleDetailScreen: React.FC = () => {
-  const { routeParams, goBack, isItemSaved, saveItem, removeSavedItem, savedItems } = useApp();
+  const { routeParams, goBack, isItemSaved, saveItem, removeSavedItem, savedItems, region } = useApp();
 
   const articleId = routeParams.id || 'guide_1';
-  const article = ARTICLES.find((a) => a.id === articleId) || ARTICLES[0];
+  const article = RegionDataProvider.getArticleById(region, articleId) || RegionDataProvider.getArticles(region)[0];
 
-  const isSaved = isItemSaved(article.title);
+  const isSaved = isItemSaved(article?.title || '');
+
+  if (!article) {
+    return (
+      <div className="p-8 text-center">
+        <p className="text-slate-500">Article not found.</p>
+        <button onClick={goBack} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold">
+          Go Back
+        </button>
+      </div>
+    );
+  }
 
   const handleBookmarkToggle = () => {
     if (isSaved) {
@@ -59,16 +70,28 @@ export const ArticleDetailScreen: React.FC = () => {
               <Clock className="w-3.5 h-3.5" />
               {article.readTimeMinutes} min read
             </span>
-            <span>•</span>
-            <span>Published {article.datePublished || 'Aug 2026'}</span>
           </div>
         </div>
 
-        <div className="h-px bg-slate-100 w-full" />
+        {/* Article Summary Lead */}
+        <div className="p-4 rounded-2xl bg-slate-50 border-l-4 border-blue-600 text-slate-700 text-sm font-medium leading-relaxed">
+          {article.summary}
+        </div>
 
-        {/* Full Markdown/Text Content */}
-        <div className="text-slate-800 text-sm sm:text-base leading-relaxed space-y-4 whitespace-pre-line font-normal">
+        {/* Article Full Content */}
+        <div className="prose prose-slate max-w-none text-slate-700 text-sm leading-relaxed whitespace-pre-line">
           {article.fullContent}
+        </div>
+
+        {/* Bottom Back Button */}
+        <div className="pt-6 border-t border-slate-100 flex items-center justify-between">
+          <button
+            onClick={goBack}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to Guides</span>
+          </button>
         </div>
       </div>
     </div>

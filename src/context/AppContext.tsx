@@ -1,7 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { SavedItem, RecentSearch } from '../types';
+import { SavedItem, RecentSearch, RegionId, RegionConfig } from '../types';
+import { REGIONS_CONFIG } from '../data/regionsConfig';
+import { openNativeOrWebLink } from '../services/nativeBrowser';
 
 interface AppContextType {
+  region: RegionId;
+  regionConfig: RegionConfig;
+  setRegion: (region: RegionId) => void;
   currentRoute: string;
   routeParams: Record<string, string>;
   navigationStack: string[];
@@ -22,15 +27,63 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
+function detectInitialRegion(): RegionId {
+  try {
+    const path = window.location.pathname.toLowerCase();
+    if (path.startsWith('/uk')) return 'uk';
+    if (path.startsWith('/ca')) return 'ca';
+    if (path.startsWith('/us')) return 'us';
+    
+    const saved = localStorage.getItem('carqix_preferred_region') as RegionId;
+    if (saved && (saved === 'us' || saved === 'uk' || saved === 'ca')) {
+      return saved;
+    }
+  } catch {
+    // fallback
+  }
+  return 'us';
+}
+
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [region, setRegionState] = useState<RegionId>(detectInitialRegion);
   const [currentRoute, setCurrentRoute] = useState<string>('home');
   const [routeParams, setRouteParams] = useState<Record<string, string>>({});
   const [navigationStack, setNavigationStack] = useState<string[]>(['home']);
 
-  // Saved Items (Persistence via LocalStorage)
+  const regionConfig = REGIONS_CONFIG[region] || REGIONS_CONFIG.us;
+
+  // Handle URL changes & sync with browser path
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname.toLowerCase();
+      if (path.startsWith('/uk')) {
+        setRegionState('uk');
+      } else if (path.startsWith('/ca')) {
+        setRegionState('ca');
+      } else {
+        setRegionState('us');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const setRegion = (newRegion: RegionId) => {
+    setRegionState(newRegion);
+    try {
+      localStorage.setItem('carqix_preferred_region', newRegion);
+      const newPath = newRegion === 'us' ? '/' : `/${newRegion}`;
+      window.history.pushState({}, '', newPath);
+    } catch (e) {
+      console.error('Failed to update URL / region:', e);
+    }
+  };
+
+  // Saved Items (Persistence via LocalStorage keyed by region or universal)
   const [savedItems, setSavedItems] = useState<SavedItem[]>(() => {
     try {
-      const stored = localStorage.getItem('carqix_saved_items');
+      const stored = localStorage.getItem(`carqix_saved_items_${region}`) || localStorage.getItem('carqix_saved_items');
       return stored ? JSON.parse(stored) : [];
     } catch {
       return [];
@@ -40,7 +93,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Recent Searches (Persistence via LocalStorage)
   const [recentSearches, setRecentSearches] = useState<RecentSearch[]>(() => {
     try {
-      const stored = localStorage.getItem('carqix_recent_searches');
+      const stored = localStorage.getItem(`carqix_recent_searches_${region}`) || localStorage.getItem('carqix_recent_searches');
       return stored ? JSON.parse(stored) : [];
     } catch {
       return [];
@@ -51,24 +104,37 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     try {
-      localStorage.setItem('carqix_saved_items', JSON.stringify(savedItems));
+      localStorage.setItem(`carqix_saved_items_${region}`, JSON.stringify(savedItems));
     } catch (e) {
       console.error('Failed to persist saved items:', e);
     }
-  }, [savedItems]);
+  }, [savedItems, region]);
 
   useEffect(() => {
     try {
-      localStorage.setItem('carqix_recent_searches', JSON.stringify(recentSearches));
+      localStorage.setItem(`carqix_recent_searches_${region}`, JSON.stringify(recentSearches));
     } catch (e) {
       console.error('Failed to persist recent searches:', e);
     }
-  }, [recentSearches]);
+  }, [recentSearches, region]);
 
   const navigate = (route: string) => {
     if (route === 'go_back') {
       goBack();
       return;
+    }
+
+    // Direct region switching via route string e.g. "switch_region:uk"
+    if (route.startsWith('switch_region:')) {
+      const targetRegion = route.replace('switch_region:', '') as RegionId;
+      if (REGIONS_CONFIG[targetRegion]) {
+        setRegion(targetRegion);
+        setCurrentRoute('home');
+        setRouteParams({});
+        setNavigationStack(['home']);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
     }
 
     // Parse route parameters e.g., 'calculator_detail/loan' or 'article_detail/guide_1'
@@ -153,13 +219,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setRecentSearches([]);
   };
 
-  const openExternalLink = (url: string, title?: string, subtitle?: string) => {
+  const openExternalLink = (url: string, _title?: string, _subtitle?: string) => {
     if (!url) return;
-    setExternalLinkTarget({
-      url,
-      title: title || 'Official Partner Portal',
-      subtitle: subtitle || 'Securely opening US partner site'
-    });
+    openNativeOrWebLink(url);
   };
 
   const closeExternalLink = () => {
@@ -169,6 +231,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   return (
     <AppContext.Provider
       value={{
+        region,
+        regionConfig,
+        setRegion,
         currentRoute,
         routeParams,
         navigationStack,
