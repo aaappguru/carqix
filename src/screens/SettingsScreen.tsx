@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Settings, MapPin, DollarSign, Bell, ShieldCheck, Check, Trash2, Globe } from 'lucide-react';
+import { Settings, MapPin, DollarSign, Bell, ShieldCheck, Check, Trash2, Globe, Smartphone } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { US_STATES } from '../data/automotiveData';
 import { UK_REGIONS, UK_POSTCODES } from '../data/ukAutomotiveData';
 import { CA_PROVINCES, CA_POSTCODES, CanadianProvince } from '../data/caAutomotiveData';
 import { RegionSwitcher } from '../components/RegionSwitcher';
+import { PlayStoreBadge } from '../components/PlayStoreBadge';
 
 export const SettingsScreen: React.FC = () => {
   const { clearSavedItems, clearRecentSearches, region, regionConfig } = useApp();
@@ -120,6 +121,9 @@ export const SettingsScreen: React.FC = () => {
           </button>
         </div>
       </form>
+
+      {/* Android Play Store App Card */}
+      <PlayStoreBadge variant="featured" />
 
       {/* Privacy & Storage Management */}
       <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">

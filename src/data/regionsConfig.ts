@@ -14,7 +14,9 @@ export const REGIONS_CONFIG: Record<RegionId, RegionConfig> = {
     postalCodeLabel: 'ZIP Code',
     postalCodePlaceholder: 'e.g. 90210',
     tagline: 'America’s Premier Used Car Portal & Financial Suite',
-    heroSubtitle: 'Compare 14+ top US marketplaces, check NMVTIS/NHTSA records, and calculate loans.'
+    heroSubtitle: 'Compare 14+ top US marketplaces, check NMVTIS/NHTSA records, and calculate loans.',
+    playStoreUrl: 'https://play.google.com/store/apps/details?id=com.aaapp.appguru.usedcarsaleusa',
+    playStorePackage: 'com.aaapp.appguru.usedcarsaleusa'
   },
   uk: {
     id: 'uk',
@@ -29,7 +31,9 @@ export const REGIONS_CONFIG: Record<RegionId, RegionConfig> = {
     postalCodeLabel: 'UK Postcode',
     postalCodePlaceholder: 'e.g. SW1A 1AA',
     tagline: 'The UK’s Trusted Used Car Marketplace & MOT History Suite',
-    heroSubtitle: 'Compare 400,000+ UK cars on AutoTrader, check free GOV.UK MOT history & calculate PCP/HP finance.'
+    heroSubtitle: 'Compare 400,000+ UK cars on AutoTrader, check free GOV.UK MOT history & calculate PCP/HP finance.',
+    playStoreUrl: 'https://play.google.com/store/apps/details?id=com.aaapp.appguru.myusedcarsaleuk',
+    playStorePackage: 'com.aaapp.appguru.myusedcarsaleuk'
   },
   ca: {
     id: 'ca',
@@ -44,6 +48,8 @@ export const REGIONS_CONFIG: Record<RegionId, RegionConfig> = {
     postalCodeLabel: 'Postal Code',
     postalCodePlaceholder: 'e.g. M5V 2T6',
     tagline: 'Canada’s Ultimate Automotive Marketplace & Valuation Hub',
-    heroSubtitle: 'Compare AutoTrader.ca, Kijiji Autos, CARFAX Canada and calculate provincial HST/PST auto loans.'
+    heroSubtitle: 'Compare AutoTrader.ca, Kijiji Autos, CARFAX Canada and calculate provincial HST/PST auto loans.',
+    playStoreUrl: 'https://play.google.com/store/apps/details?id=com.aaapp.appguru.myusedcarsalecanada',
+    playStorePackage: 'com.aaapp.appguru.myusedcarsalecanada'
   }
 };

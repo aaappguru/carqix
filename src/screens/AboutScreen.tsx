@@ -2,6 +2,7 @@ import React from 'react';
 import { Car, ShieldCheck, Sparkles, CheckCircle2, Heart, Award, Globe } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { RegionSwitcher } from '../components/RegionSwitcher';
+import { PlayStoreBadge } from '../components/PlayStoreBadge';
 
 export const AboutScreen: React.FC = () => {
   const { regionConfig } = useApp();
@@ -27,6 +28,9 @@ export const AboutScreen: React.FC = () => {
         </p>
       </div>
 
+      {/* Featured Android App Download */}
+      <PlayStoreBadge variant="featured" />
+
       {/* Global Regional Portals Card */}
       <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
         <div className="flex items-center gap-2">
@@ -37,6 +41,11 @@ export const AboutScreen: React.FC = () => {
           CarQix operates dedicated localized portals with region-specific partner integrations, currencies, legal guidelines, and vehicle check databases:
         </p>
         <RegionSwitcher variant="banner" />
+      </div>
+
+      {/* All Play Store Apps Grid */}
+      <div className="bg-[#0A192F] rounded-3xl p-6 border border-slate-800 shadow-sm">
+        <PlayStoreBadge variant="all-grid" />
       </div>
 
       {/* Value Pillars */}

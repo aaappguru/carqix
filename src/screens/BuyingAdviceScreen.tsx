@@ -5,6 +5,8 @@ import {
   FileText, 
   ShieldCheck, 
   DollarSign, 
+  PoundSterling,
+  TrendingUp,
   CreditCard, 
   Zap, 
   Calculator, 
@@ -57,8 +59,14 @@ export const BuyingAdviceScreen: React.FC = () => {
             onClick={() => navigate('value_car')}
             className="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm hover:border-blue-300 text-center transition-all flex flex-col items-center gap-1.5"
           >
-            <DollarSign className="w-5 h-5 text-emerald-600" />
-            <span className="text-xs font-bold text-slate-800">Car Valuation</span>
+            {isUk ? (
+              <PoundSterling className="w-5 h-5 text-emerald-600" />
+            ) : isCa ? (
+              <TrendingUp className="w-5 h-5 text-emerald-600" />
+            ) : (
+              <DollarSign className="w-5 h-5 text-emerald-600" />
+            )}
+            <span className="text-xs font-bold text-slate-800">{isUk ? 'Valuation (£)' : isCa ? 'Black Book®' : 'Car Valuation'}</span>
           </button>
 
           <button

@@ -80,9 +80,9 @@ export const HomeScreen: React.FC = () => {
     },
     {
       id: 'value',
-      title: isUk ? 'Free Valuation' : isCa ? 'Car Valuation' : 'Car Valuation',
+      title: isUk ? 'Free Valuation' : isCa ? 'Black Book® Value' : 'Car Valuation',
       subtitle: isUk ? 'Forecourt & trade-in' : isCa ? 'Canadian Black Book®' : 'True Market Value®',
-      icon: isUk ? PoundSterling : DollarSign,
+      icon: isUk ? PoundSterling : isCa ? TrendingUp : DollarSign,
       route: 'value_car',
       color: 'text-emerald-600',
       bg: 'bg-emerald-50'
@@ -317,6 +317,8 @@ export const HomeScreen: React.FC = () => {
           >
             {isUk ? (
               <PoundSterling className="w-4 h-4 text-emerald-400 mb-1" />
+            ) : isCa ? (
+              <Calculator className="w-4 h-4 text-emerald-400 mb-1" />
             ) : (
               <DollarSign className="w-4 h-4 text-emerald-400 mb-1" />
             )}

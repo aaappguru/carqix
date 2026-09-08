@@ -14,6 +14,8 @@ export interface RegionConfig {
   postalCodePlaceholder: string;
   tagline: string;
   heroSubtitle: string;
+  playStoreUrl: string;
+  playStorePackage: string;
 }
 
 export interface PartnerConfig {

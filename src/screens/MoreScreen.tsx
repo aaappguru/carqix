@@ -13,14 +13,17 @@ import {
   Wrench, 
   DollarSign, 
   PoundSterling,
+  TrendingUp,
   Heart,
-  Globe
+  Globe,
+  Smartphone
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { RegionSwitcher } from '../components/RegionSwitcher';
+import { PlayStoreBadge } from '../components/PlayStoreBadge';
 
 export const MoreScreen: React.FC = () => {
-  const { navigate, region, regionConfig } = useApp();
+  const { navigate, region, regionConfig, openExternalLink } = useApp();
 
   const isUk = region === 'uk';
   const isCa = region === 'ca';
@@ -32,7 +35,7 @@ export const MoreScreen: React.FC = () => {
         { label: 'Buying Advice & Checklist', icon: BookOpen, route: 'buying_advice' },
         { label: `${regionConfig.shortName} Parts & Accessories`, icon: Wrench, route: 'parts_accessories' },
         { label: isUk ? 'Breakdown Cover (AA & RAC)' : isCa ? 'CAA Roadside Assistance' : 'Roadside Assistance (AAA)', icon: ShieldCheck, route: 'breakdown_cover' },
-        { label: isUk ? 'Sell or Value Car (£)' : isCa ? 'Sell or Value Car (CA$)' : 'Sell or Value Your Car', icon: isUk ? PoundSterling : DollarSign, route: 'sell_car' },
+        { label: isUk ? 'Sell or Value Car (£)' : isCa ? 'Sell or Value Car (CA$)' : 'Sell or Value Your Car', icon: isUk ? PoundSterling : isCa ? TrendingUp : DollarSign, route: 'sell_car' },
       ]
     },
     {
@@ -59,6 +62,9 @@ export const MoreScreen: React.FC = () => {
         <h1 className="text-xl sm:text-2xl font-black text-[#0A192F] tracking-tight">More Options</h1>
         <p className="text-xs text-slate-500">Settings, guides, app resources, and official documentation</p>
       </div>
+
+      {/* Featured Google Play App Banner */}
+      <PlayStoreBadge variant="featured" />
 
       {/* Global Regional Portal Selector Card */}
       <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
@@ -108,3 +114,5 @@ export const MoreScreen: React.FC = () => {
     </div>
   );
 };
+
+export default MoreScreen;
