@@ -9,6 +9,7 @@ export const BreakdownCoverScreen: React.FC = () => {
   const { openExternalLink, region, regionConfig } = useApp();
 
   const isUk = region === 'uk';
+  const isCa = region === 'ca';
   const breakdownProviders = RegionDataProvider.getProvidersByCategory(region, 'BREAKDOWN');
 
   return (
@@ -17,18 +18,22 @@ export const BreakdownCoverScreen: React.FC = () => {
         title={
           isUk
             ? 'UK Breakdown Cover & Roadside Recovery'
+            : isCa
+            ? 'Canadian Roadside Assistance & CAA Recovery'
             : '24/7 Roadside Assistance & Recovery'
         }
         subtitle={
           isUk
             ? 'Compare AA Breakdown, RAC, Green Flag, and Britannia Rescue for 24/7 roadside recovery, home start, and onward travel.'
+            : isCa
+            ? 'Compare CAA (Canadian Automobile Association), Canadian Tire Roadside, and OnStar for 24/7 coast-to-coast towing, battery boost, lockout, and winching.'
             : 'Compare nationwide 24/7 roadside assistance, towing, battery jumpstarts, lockout services, and fuel delivery.'
         }
-        ctaText={isUk ? 'View AA Breakdown Cover' : 'Get Roadside Coverage'}
-        badgeText={isUk ? '8/10 Fixed at Roadside' : 'Nationwide 24/7 Support'}
+        ctaText={isUk ? 'View AA Breakdown Cover' : isCa ? 'View Canadian Roadside Cover' : 'Get Roadside Coverage'}
+        badgeText={isUk ? '8/10 Fixed at Roadside' : isCa ? 'Coast-to-Coast Coverage' : 'Nationwide 24/7 Support'}
         onCtaClick={() => {
           if (breakdownProviders.length > 0) {
-            openExternalLink(breakdownProviders[0].partnerKey, breakdownProviders[0].name, 'UK roadside assistance comparison');
+            openExternalLink(breakdownProviders[0].partnerKey, breakdownProviders[0].name, `${regionConfig.shortName} roadside assistance`);
           }
         }}
       />

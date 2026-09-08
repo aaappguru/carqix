@@ -20,11 +20,11 @@ export const CarInsuranceScreen: React.FC = () => {
           isUk
             ? 'Compare over 100+ UK motor insurance providers on Compare the Market, MoneySuperMarket, and Confused.com to save up to £504 annually.'
             : isCa
-            ? 'Compare Canadian comprehensive and collision auto insurance quotes tailored to your province.'
+            ? 'Compare Canadian comprehensive and collision auto insurance quotes tailored to your province to save up to CA$620 annually.'
             : 'Compare real-time quotes from top US insurance providers to save an average of $450-$585 annually.'
         }
-        ctaText={isUk ? 'Compare 100+ UK Insurers' : 'Get Instant Quote'}
-        badgeText={isUk ? 'Save Up to £504/Year' : 'Save Up to $585/Year'}
+        ctaText={isUk ? 'Compare 100+ UK Insurers' : isCa ? 'Compare Canadian Insurers' : 'Get Instant Quote'}
+        badgeText={isUk ? 'Save Up to £504/Year' : isCa ? 'Save Up to CA$620/Year' : 'Save Up to $585/Year'}
         onCtaClick={() => {
           if (insuranceProviders.length > 0) {
             openExternalLink(insuranceProviders[0].partnerKey, insuranceProviders[0].name, 'Compare top insurance quotes');

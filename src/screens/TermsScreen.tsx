@@ -1,7 +1,10 @@
 import React from 'react';
 import { FileText, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { useApp } from '../context/AppContext';
 
 export const TermsScreen: React.FC = () => {
+  const { regionConfig } = useApp();
+
   return (
     <div className="space-y-6 pb-12">
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
@@ -11,7 +14,7 @@ export const TermsScreen: React.FC = () => {
           </div>
           <div>
             <h1 className="text-xl sm:text-2xl font-black text-[#0A192F]">Terms of Service & Disclosures</h1>
-            <p className="text-xs text-slate-500">Last updated: August 2026</p>
+            <p className="text-xs text-slate-500">{regionConfig.name} • Last updated: {new Date().getFullYear()}</p>
           </div>
         </div>
 
@@ -21,28 +24,28 @@ export const TermsScreen: React.FC = () => {
           <section className="space-y-2">
             <h2 className="font-bold text-base text-[#0A192F]">1. Informational & Estimation Purpose Only</h2>
             <p>
-              All valuations, loan calculations, depreciation curves, tax computations, and insurance quotes displayed in CarQix US are mathematical estimates designed for consumer guidance. Actual prices, interest rates (APR), taxes, dealership document fees, and final approval terms are determined solely by financial institutions, dealerships, state DMVs, and insurance underwriters.
+              All valuations, loan calculations, depreciation curves, tax computations, and insurance estimates displayed in {regionConfig.shortName} are mathematical calculations designed for consumer guidance. Actual purchase prices, interest rates (APR), taxes, dealer admin fees, and final approval terms are determined solely by financial institutions, dealerships, government transport bodies, and insurance underwriters in {regionConfig.name}.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="font-bold text-base text-[#0A192F]">2. Affiliate & Advertising Disclosure</h2>
             <p>
-              CarQix US may receive referral fees or affiliate commissions when users click out to certain third-party partner services (e.g., Edmunds, Insurify, EpicVIN, Amazon Auto) and complete an action or quote. This compensation helps us maintain our calculators and tools without charging subscription fees to car buyers.
+              {regionConfig.shortName} may receive referral fees or affiliate commissions when users click out to certain third-party partner services and complete an inquiry or transaction. This compensation helps us maintain our calculators, valuation tools, and vehicle guides without charging subscription fees to car buyers.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="font-bold text-base text-[#0A192F]">3. Intellectual Property & Trademarks</h2>
             <p>
-              Edmunds, TrueCar, CarGurus, Autotrader, Cars.com, Insurify, EpicVIN, Bankrate, AAA, and all other respective brand names, trademarks, and logos are the property of their respective owners and used solely for identification and comparison purposes.
+              All third-party brand names, marketplace trademarks, badges, and logos are the property of their respective owners and used solely for comparative reference and identification purposes.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="font-bold text-base text-[#0A192F]">4. Limitation of Liability</h2>
             <p>
-              CarQix US assumes no liability for vehicle transactions, private party sales disputes, title issues, mechanical breakdowns, or loan contract agreements entered into with third-party sellers or lenders.
+              {regionConfig.shortName} assumes no liability for vehicle transactions, private party sales disputes, title or logbook issues, mechanical breakdowns, or loan contract agreements entered into with third-party sellers, buyers, or lenders.
             </p>
           </section>
         </div>

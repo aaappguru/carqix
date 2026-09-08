@@ -1,21 +1,10 @@
 import React, { useState } from 'react';
 import { Search, X, ArrowRight, ExternalLink, Sparkles, BookOpen, Layers, Car, DollarSign, Wrench } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { 
-  MARKETPLACES, 
-  ARTICLES, 
-  VALUATION_PROVIDERS, 
-  SELLING_PROVIDERS,
-  HISTORY_PROVIDERS,
-  FINANCE_PROVIDERS, 
-  INSURANCE_PROVIDERS, 
-  BREAKDOWN_PROVIDERS, 
-  PARTS_PROVIDERS, 
-  POPULAR_MAKES 
-} from '../data/automotiveData';
+import { RegionDataProvider } from '../data/regionDataProvider';
 
 export const GlobalSearchScreen: React.FC = () => {
-  const { navigate, openExternalLink, recentSearches, addRecentSearch, clearRecentSearches } = useApp();
+  const { navigate, openExternalLink, recentSearches, addRecentSearch, clearRecentSearches, region, regionConfig } = useApp();
   const [query, setQuery] = useState('');
 
   const handleSearchSubmit = (searchVal: string) => {
@@ -27,27 +16,38 @@ export const GlobalSearchScreen: React.FC = () => {
     setQuery('');
   };
 
+  const marketplaces = RegionDataProvider.getMarketplaces(region);
+  const articles = RegionDataProvider.getArticles(region);
+
+  const valuationProviders = RegionDataProvider.getProvidersByCategory(region, 'VALUATION');
+  const sellingProviders = RegionDataProvider.getProvidersByCategory(region, 'SELLING');
+  const historyProviders = RegionDataProvider.getProvidersByCategory(region, 'HISTORY');
+  const financeProviders = RegionDataProvider.getProvidersByCategory(region, 'FINANCE');
+  const insuranceProviders = RegionDataProvider.getProvidersByCategory(region, 'INSURANCE');
+  const breakdownProviders = RegionDataProvider.getProvidersByCategory(region, 'BREAKDOWN');
+  const partsProviders = RegionDataProvider.getProvidersByCategory(region, 'PARTS');
+
   // Aggregated search matches
-  const marketplaceMatches = MARKETPLACES.filter(m => 
+  const marketplaceMatches = marketplaces.filter(m => 
     m.name.toLowerCase().includes(query.toLowerCase()) || 
     m.description.toLowerCase().includes(query.toLowerCase()) ||
     m.category.toLowerCase().includes(query.toLowerCase())
   );
 
-  const articleMatches = ARTICLES.filter(a =>
+  const articleMatches = articles.filter(a =>
     a.title.toLowerCase().includes(query.toLowerCase()) ||
     a.summary.toLowerCase().includes(query.toLowerCase()) ||
     a.tag.toLowerCase().includes(query.toLowerCase())
   );
 
   const allProviders = [
-    ...VALUATION_PROVIDERS.map(p => ({ ...p, section: 'Valuation & Appraisal', route: 'value_car' })),
-    ...SELLING_PROVIDERS.map(p => ({ ...p, section: 'Selling & Trade-In', route: 'sell_car' })),
-    ...HISTORY_PROVIDERS.map(p => ({ ...p, section: 'Vehicle History & VIN', route: 'vehicle_history' })),
-    ...FINANCE_PROVIDERS.map(p => ({ ...p, section: 'Auto Financing', route: 'car_finance' })),
-    ...INSURANCE_PROVIDERS.map(p => ({ ...p, section: 'Car Insurance', route: 'car_insurance' })),
-    ...BREAKDOWN_PROVIDERS.map(p => ({ ...p, section: 'Roadside Assistance', route: 'breakdown_cover' })),
-    ...PARTS_PROVIDERS.map(p => ({ ...p, section: 'Parts & Accessories', route: 'parts_accessories' }))
+    ...valuationProviders.map(p => ({ ...p, section: 'Valuation & Appraisal', route: 'value_car' })),
+    ...sellingProviders.map(p => ({ ...p, section: 'Selling & Trade-In', route: 'sell_car' })),
+    ...historyProviders.map(p => ({ ...p, section: 'Vehicle History & VIN', route: 'vehicle_history' })),
+    ...financeProviders.map(p => ({ ...p, section: 'Auto Financing', route: 'car_finance' })),
+    ...insuranceProviders.map(p => ({ ...p, section: 'Car Insurance', route: 'car_insurance' })),
+    ...breakdownProviders.map(p => ({ ...p, section: 'Roadside Assistance', route: 'breakdown_cover' })),
+    ...partsProviders.map(p => ({ ...p, section: 'Parts & Accessories', route: 'parts_accessories' }))
   ];
 
   const providerMatches = allProviders.filter(p =>
