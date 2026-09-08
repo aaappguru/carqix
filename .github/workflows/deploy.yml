@@ -1,9 +1,9 @@
-name: Deploy Carqix to GitHub Pages
+name: Deploy CarQix to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
+    branches: ["main", "master"]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -11,8 +11,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: 'pages'
-  cancel-in-progress: false
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -28,10 +28,13 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci || npm install
 
-      - name: Build project
+      - name: Build production bundle
         run: npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
