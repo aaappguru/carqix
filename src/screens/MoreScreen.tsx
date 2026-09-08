@@ -12,6 +12,7 @@ import {
   Car, 
   Wrench, 
   DollarSign, 
+  PoundSterling,
   Heart,
   Globe
 } from 'lucide-react';
@@ -31,7 +32,7 @@ export const MoreScreen: React.FC = () => {
         { label: 'Buying Advice & Checklist', icon: BookOpen, route: 'buying_advice' },
         { label: `${regionConfig.shortName} Parts & Accessories`, icon: Wrench, route: 'parts_accessories' },
         { label: isUk ? 'Breakdown Cover (AA & RAC)' : isCa ? 'CAA Roadside Assistance' : 'Roadside Assistance (AAA)', icon: ShieldCheck, route: 'breakdown_cover' },
-        { label: isUk ? 'Sell or Value Car (£)' : isCa ? 'Sell or Value Car (CA$)' : 'Sell or Value Your Car', icon: DollarSign, route: 'sell_car' },
+        { label: isUk ? 'Sell or Value Car (£)' : isCa ? 'Sell or Value Car (CA$)' : 'Sell or Value Your Car', icon: isUk ? PoundSterling : DollarSign, route: 'sell_car' },
       ]
     },
     {

@@ -3,6 +3,7 @@ import {
   Car, 
   Calculator, 
   DollarSign, 
+  PoundSterling,
   ShieldCheck, 
   FileSearch, 
   Wrench, 
@@ -71,7 +72,7 @@ export const HomeScreen: React.FC = () => {
     {
       id: 'loan',
       title: isUk ? 'PCP & HP Calc' : isCa ? 'Auto Loan (CA$)' : 'Auto Loan Calc',
-      subtitle: isUk ? 'Monthly PCP / HP rates' : 'Estimate monthly rates',
+      subtitle: isUk ? 'Monthly PCP / HP rates' : isCa ? 'Provincial tax & rates' : 'Estimate monthly rates',
       icon: Calculator,
       route: 'calculator_detail/loan',
       color: 'text-blue-600',
@@ -79,9 +80,9 @@ export const HomeScreen: React.FC = () => {
     },
     {
       id: 'value',
-      title: isUk ? 'Free Valuation' : 'Car Valuation',
-      subtitle: isUk ? 'Forecourt & trade-in' : 'True Market Value®',
-      icon: DollarSign,
+      title: isUk ? 'Free Valuation' : isCa ? 'Car Valuation' : 'Car Valuation',
+      subtitle: isUk ? 'Forecourt & trade-in' : isCa ? 'Canadian Black Book®' : 'True Market Value®',
+      icon: isUk ? PoundSterling : DollarSign,
       route: 'value_car',
       color: 'text-emerald-600',
       bg: 'bg-emerald-50'
@@ -98,7 +99,7 @@ export const HomeScreen: React.FC = () => {
     {
       id: 'advice',
       title: 'Buyer Guide',
-      subtitle: isUk ? 'V5C & inspection tips' : '10-pt inspection tips',
+      subtitle: isUk ? 'V5C & inspection tips' : isCa ? 'Safety cert & UVIP tips' : '10-pt inspection tips',
       icon: BookOpen,
       route: 'buying_advice',
       color: 'text-amber-600',
@@ -314,12 +315,16 @@ export const HomeScreen: React.FC = () => {
             onClick={() => navigate('car_finance')}
             className="p-3 rounded-xl bg-white/10 hover:bg-white/15 text-left transition-colors border border-white/5"
           >
-            <DollarSign className="w-4 h-4 text-emerald-400 mb-1" />
+            {isUk ? (
+              <PoundSterling className="w-4 h-4 text-emerald-400 mb-1" />
+            ) : (
+              <DollarSign className="w-4 h-4 text-emerald-400 mb-1" />
+            )}
             <div className="text-xs font-bold text-white">
-              {isUk ? 'Car Finance (PCP/HP)' : 'Car Finance'}
+              {isUk ? 'Car Finance (PCP/HP)' : isCa ? 'Auto Finance (CA$)' : 'Car Finance ($)'}
             </div>
             <div className="text-[10px] text-slate-300">
-              {isUk ? 'Zuto & AutoTrader' : isCa ? 'Canadian Rates' : 'Bankrate & Lenders'}
+              {isUk ? 'Zuto & AutoTrader' : isCa ? 'Canadian Rates & HST' : 'Bankrate & Lenders'}
             </div>
           </button>
 

@@ -76,11 +76,13 @@ export const ValueCarScreen: React.FC = () => {
   return (
     <div className="space-y-6 pb-12">
       <HeroBanner
-        title={`Car Valuation & ${isUk ? 'Forecourt Market Value' : 'True Market Value®'}`}
+        title={`Car Valuation & ${isUk ? 'Forecourt Market Value' : isCa ? 'Canadian Black Book®' : 'True Market Value®'}`}
         subtitle={
           isUk
             ? 'Get instant mathematical price ranges for private sales, dealer part-exchange, and AutoTrader forecourt valuations in GBP (£).'
-            : 'Get instant mathematical price ranges for private sales, dealer trade-ins, and verified market appraisals.'
+            : isCa
+            ? 'Get instant Canadian Black Book estimates, trade-in ranges, and private sale valuations in CAD (CA$).'
+            : 'Get instant True Market Value (TMV®) price ranges for private sales, dealer trade-ins, and verified market appraisals.'
         }
         badgeText={`${regionConfig.shortName} Pricing Data`}
       />

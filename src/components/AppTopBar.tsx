@@ -62,7 +62,7 @@ export const AppTopBar: React.FC<AppTopBarProps> = ({
       case 'home': return { main: regionName, sub: regionConfig.heroSubtitle.split(',')[0] || 'Automotive Companion' };
       case 'buy_cars': return { main: 'Used Cars', sub: `Compare ${isUk ? 'UK' : isCa ? 'Canada' : 'US'} Marketplaces` };
       case 'sell_car': return { main: 'Sell Car', sub: 'Instant Offers & Online Valuation' };
-      case 'value_car': return { main: 'Car Valuation', sub: isUk ? 'AutoTrader & Motorway' : isCa ? 'Canadian Market Value' : 'True Market Value®' };
+      case 'value_car': return { main: 'Car Valuation', sub: isUk ? 'AutoTrader & Motorway' : isCa ? 'Canadian Black Book®' : 'True Market Value®' };
       case 'vehicle_history': return { main: isUk ? 'MOT History' : isCa ? 'CARFAX Canada' : 'VIN History', sub: isUk ? 'GOV.UK & HPI Check' : isCa ? 'Lien & Accident Check' : 'NMVTIS & NHTSA Recalls' };
       case 'car_finance': return { main: 'Auto Finance', sub: isUk ? 'PCP & HP Loans (£)' : isCa ? 'Car Loans & HST (CA$)' : 'Compare Rates & Loans ($)' };
       case 'car_insurance': return { main: 'Car Insurance', sub: isUk ? 'Compare 100+ UK Insurers' : 'Compare Top Carriers' };

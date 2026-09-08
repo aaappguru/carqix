@@ -112,15 +112,15 @@ export const GlobalSearchScreen: React.FC = () => {
       {!query && (
         <div className="space-y-4">
           <h2 className="text-xs font-black uppercase tracking-wider text-slate-500">
-            Popular Shortcuts
+            Popular {regionConfig.shortName} Shortcuts
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
             {[
-              { label: 'Toyota Camry', query: 'Toyota' },
-              { label: 'Honda Civic', query: 'Honda' },
-              { label: 'Ford F-150', query: 'Ford' },
-              { label: 'Auto Loan Calc', route: 'calculator_detail/loan' },
-              { label: 'VIN Recalls', route: 'vehicle_history' },
+              { label: region === 'uk' ? 'Ford Fiesta' : region === 'ca' ? 'Honda Civic' : 'Toyota Camry', query: region === 'uk' ? 'Ford' : region === 'ca' ? 'Honda' : 'Toyota' },
+              { label: region === 'uk' ? 'Vauxhall Corsa' : region === 'ca' ? 'Toyota RAV4' : 'Honda Civic', query: region === 'uk' ? 'Vauxhall' : region === 'ca' ? 'Toyota' : 'Honda' },
+              { label: region === 'uk' ? 'Volkswagen Golf' : region === 'ca' ? 'Ford F-150' : 'Ford F-150', query: region === 'uk' ? 'Volkswagen' : 'Ford' },
+              { label: region === 'uk' ? 'PCP & HP Calc' : region === 'ca' ? 'Auto Loan (CA$)' : 'Auto Loan Calc', route: 'calculator_detail/loan' },
+              { label: region === 'uk' ? 'MOT History Check' : region === 'ca' ? 'CARFAX Canada Liens' : 'VIN Recalls', route: 'vehicle_history' },
               { label: 'Buyer Checklist', route: 'buying_advice' },
             ].map((item, idx) => (
               <button
