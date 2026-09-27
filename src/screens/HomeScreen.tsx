@@ -435,6 +435,96 @@ export const HomeScreen: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* SEO Information & FAQ Hub */}
+      <section className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-6" aria-label="Automotive Information and Frequently Asked Questions">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold mb-2">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Why Choose CarQix</span>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-black text-[#0A192F] tracking-tight">
+            {regionConfig.shortName} – The Complete Used Car Portal & Financial Suite
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mt-2">
+            CarQix aggregates live listings and verified automotive tools across {regionConfig.name}. Whether you are buying a certified pre-owned vehicle, evaluating trade-in equity, checking NMVTIS/CARFAX history reports, comparing auto loan rates, or finding the cheapest insurance quotes, CarQix delivers transparent automotive data at your fingertips.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-slate-100">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 font-bold text-xs text-[#0A192F]">
+              <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>500,000+ Verified Listings</span>
+            </div>
+            <p className="text-[11px] text-slate-500">
+              Aggregated across top trusted marketplaces in {regionConfig.name}.
+            </p>
+          </div>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 font-bold text-xs text-[#0A192F]">
+              <CheckCircle className="w-4 h-4 text-blue-600 shrink-0" />
+              <span>Real-Time Market Valuation</span>
+            </div>
+            <p className="text-[11px] text-slate-500">
+              Accurate trade-in, private sale, and forecourt retail price predictions.
+            </p>
+          </div>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 font-bold text-xs text-[#0A192F]">
+              <CheckCircle className="w-4 h-4 text-purple-600 shrink-0" />
+              <span>Smart Financial Calculators</span>
+            </div>
+            <p className="text-[11px] text-slate-500">
+              Auto loan APR, amortization schedules, lease vs. buy, and total ownership costs.
+            </p>
+          </div>
+        </div>
+
+        {/* Frequently Asked Questions Accordion */}
+        <div className="pt-4 border-t border-slate-100">
+          <h2 className="text-sm font-bold text-[#0A192F] mb-3">
+            Frequently Asked Questions about {regionConfig.shortName}
+          </h2>
+          <div className="space-y-2.5">
+            <details className="group rounded-xl border border-slate-200/80 bg-slate-50/50 p-3.5 transition-all [&_summary::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer items-center justify-between font-semibold text-xs text-slate-800 hover:text-blue-600">
+                <span>How does CarQix compare vehicle prices across marketplaces?</span>
+                <span className="transition group-open:rotate-180">
+                  <ArrowRight className="w-3.5 h-3.5 text-slate-400 rotate-90" />
+                </span>
+              </summary>
+              <p className="mt-2 text-xs leading-relaxed text-slate-600">
+                CarQix provides direct deep-linking and search filters across leading dealer networks and classified portals including AutoTrader, Cars.com, CarGurus, Edmunds, Kijiji Autos, and Motors.co.uk so you never miss a verified bargain.
+              </p>
+            </details>
+
+            <details className="group rounded-xl border border-slate-200/80 bg-slate-50/50 p-3.5 transition-all [&_summary::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer items-center justify-between font-semibold text-xs text-slate-800 hover:text-blue-600">
+                <span>How can I check a car's history before buying?</span>
+                <span className="transition group-open:rotate-180">
+                  <ArrowRight className="w-3.5 h-3.5 text-slate-400 rotate-90" />
+                </span>
+              </summary>
+              <p className="mt-2 text-xs leading-relaxed text-slate-600">
+                Use the Vehicle History section in CarQix to access official NMVTIS, CARFAX, AutoCheck, or UK GOV.UK MOT databases to verify previous accidents, structural damage, title brands, and mileage records.
+              </p>
+            </details>
+
+            <details className="group rounded-xl border border-slate-200/80 bg-slate-50/50 p-3.5 transition-all [&_summary::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer items-center justify-between font-semibold text-xs text-slate-800 hover:text-blue-600">
+                <span>Can I switch between US, UK, and Canada editions?</span>
+                <span className="transition group-open:rotate-180">
+                  <ArrowRight className="w-3.5 h-3.5 text-slate-400 rotate-90" />
+                </span>
+              </summary>
+              <p className="mt-2 text-xs leading-relaxed text-slate-600">
+                Yes! CarQix features instantaneous regional switching between CarQix US ($ / miles), CarQix UK (£ / MOT / PCP), and CarQix Canada (CA$ / km / provincial taxes) with tailored partner marketplaces and calculators for each territory.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

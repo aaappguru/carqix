@@ -7,6 +7,7 @@ interface HeroBannerProps {
   subtitle: string;
   ctaText?: string;
   badgeText?: string;
+  asHeadingTag?: 'h1' | 'h2';
   onCtaClick?: () => void;
 }
 
@@ -15,8 +16,11 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
   subtitle,
   ctaText,
   badgeText,
+  asHeadingTag = 'h1',
   onCtaClick
 }) => {
+  const HeadingTag = asHeadingTag;
+
   return (
     <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0A192F] via-[#112240] to-[#1E3A8A] text-white p-6 shadow-md border border-slate-700/50">
       {/* Subtle background glow */}
@@ -31,9 +35,9 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
           </div>
         )}
 
-        <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight leading-tight">
+        <HeadingTag className="text-xl sm:text-2xl font-black text-white tracking-tight leading-tight">
           {title}
-        </h2>
+        </HeadingTag>
 
         <p className="text-slate-200 text-sm leading-relaxed max-w-xl">
           {subtitle}

@@ -6,6 +6,8 @@ import { AppFooter } from './components/AppFooter';
 import { ExternalLinkModal } from './components/ExternalLinkModal';
 import { admobService } from './services/admobService';
 
+import { SEOHead } from './components/SEOHead';
+
 // Screens
 import { HomeScreen } from './screens/HomeScreen';
 import { BuyCarsScreen } from './screens/BuyCarsScreen';
@@ -91,6 +93,9 @@ const MainContent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between text-slate-900 font-sans selection:bg-blue-500 selection:text-white">
+      {/* Headless Dynamic SEO Manager */}
+      <SEOHead />
+
       {/* Top Header Navigation */}
       <AppTopBar />
 

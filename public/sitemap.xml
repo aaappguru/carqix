@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Home - US (Default) -->
+  <url>
+    <loc>https://carqix.com/</loc>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://carqix.com/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://carqix.com/uk" />
+    <xhtml:link rel="alternate" hreflang="en-CA" href="https://carqix.com/ca" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://carqix.com/" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Home - UK -->
+  <url>
+    <loc>https://carqix.com/uk</loc>
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://carqix.com/uk" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://carqix.com/" />
+    <xhtml:link rel="alternate" hreflang="en-CA" href="https://carqix.com/ca" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Home - Canada -->
+  <url>
+    <loc>https://carqix.com/ca</loc>
+    <xhtml:link rel="alternate" hreflang="en-CA" href="https://carqix.com/ca" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://carqix.com/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://carqix.com/uk" />
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Buy Cars Marketplace -->
+  <url>
+    <loc>https://carqix.com/#buy_cars</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <!-- Value My Car & Free Price Estimator -->
+  <url>
+    <loc>https://carqix.com/#value_car</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Sell Your Car Online -->
+  <url>
+    <loc>https://carqix.com/#sell_car</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Vehicle History Check & VIN Lookup -->
+  <url>
+    <loc>https://carqix.com/#vehicle_history</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Auto Finance & Loan Rates Comparison -->
+  <url>
+    <loc>https://carqix.com/#car_finance</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Car Insurance Comparison -->
+  <url>
+    <loc>https://carqix.com/#car_insurance</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Breakdown Cover & Roadside Assistance -->
+  <url>
+    <loc>https://carqix.com/#breakdown_cover</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- OEM Parts & Auto Accessories -->
+  <url>
+    <loc>https://carqix.com/#parts_accessories</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Smart Automotive Calculators -->
+  <url>
+    <loc>https://carqix.com/#smart_tools</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Car Reviews & Expert Guides -->
+  <url>
+    <loc>https://carqix.com/#reviews_guides</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Used Car Buying Advice & Inspection Checklist -->
+  <url>
+    <loc>https://carqix.com/#buying_advice</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- About CarQix -->
+  <url>
+    <loc>https://carqix.com/#about</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- How to Use CarQix -->
+  <url>
+    <loc>https://carqix.com/#how_to_use</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Privacy Policy -->
+  <url>
+    <loc>https://carqix.com/#privacy_policy</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Terms and Conditions -->
+  <url>
+    <loc>https://carqix.com/#terms</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+</urlset>

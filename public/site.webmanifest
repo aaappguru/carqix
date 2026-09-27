@@ -1,0 +1,37 @@
+{
+  "name": "CarQix – Automotive Companion & Used Car Marketplace",
+  "short_name": "CarQix",
+  "description": "Compare 500,000+ used cars, instant vehicle valuations, auto loan calculators, VIN checks, and insurance comparison in US, UK & Canada.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F4F6FA",
+  "theme_color": "#1D4ED8",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["shopping", "finance", "lifestyle", "utilities"],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.aaapp.appguru.usedcarsaleusa",
+      "id": "com.aaapp.appguru.usedcarsaleusa"
+    },
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.aaapp.appguru.myusedcarsaleuk",
+      "id": "com.aaapp.appguru.myusedcarsaleuk"
+    },
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.aaapp.appguru.myusedcarsalecanada",
+      "id": "com.aaapp.appguru.myusedcarsalecanada"
+    }
+  ],
+  "prefer_related_applications": false
+}
