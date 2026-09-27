@@ -31,8 +31,8 @@ export const AppFooter: React.FC = () => {
   return (
     <footer className="w-full bg-[#0A192F] text-slate-300 border-t border-slate-800 mt-12 pb-20 md:pb-12 text-sm">
       {/* Top Footer Ribbon: Trust & Key Highlights */}
-      <div className="border-b border-slate-800/80 bg-[#071324]/90 py-4 px-4 sm:px-6 lg:px-8 xl:px-12">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 text-xs">
+      <div className="border-b border-slate-800/80 bg-[#071324]/90 py-4 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-4 text-xs">
           <div className="flex items-center gap-2 text-slate-300">
             <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span className="font-semibold text-white">CarQix {regionConfig.shortName}</span>
@@ -54,7 +54,7 @@ export const AppFooter: React.FC = () => {
       </div>
 
       {/* Main Footer Content Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-10 lg:py-14">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10">
           
           {/* Column 1: Brand & Regional Hub (spans 2 cols on lg) */}

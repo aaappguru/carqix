@@ -24,7 +24,7 @@ export const AppBottomBar: React.FC = () => {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 shadow-lg">
-      <div className="w-full max-w-6xl mx-auto px-2 sm:px-6 grid grid-cols-5 h-16">
+      <div className="w-full max-w-5xl mx-auto px-2 sm:px-6 grid grid-cols-5 h-16">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = getIsActive(item.id, item.route);

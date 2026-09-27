@@ -94,8 +94,8 @@ const MainContent: React.FC = () => {
       {/* Top Header Navigation */}
       <AppTopBar />
 
-      {/* Main Screen Container with full width layout and responsive padding */}
-      <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 xl:px-12 pt-5 pb-8">
+      {/* Main Screen Container with standard centered layout */}
+      <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-10">
         {renderScreen()}
       </main>
 

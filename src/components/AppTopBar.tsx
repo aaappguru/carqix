@@ -93,7 +93,7 @@ export const AppTopBar: React.FC<AppTopBarProps> = ({
   return (
     <header className="sticky top-0 z-40 bg-[#0A192F] text-white border-b border-slate-800 shadow-md w-full">
       {/* Top Row: Brand / Screen Title + Nav Links + Region / Actions */}
-      <div className="w-full px-3 sm:px-6 lg:px-8 xl:px-12 h-16 flex items-center justify-between gap-2 sm:gap-4">
+      <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
         {/* Left Side: Back button or Logo mark + Title */}
         <div className="flex items-center gap-2.5 sm:gap-3 shrink-0 min-w-0">
           {isBackNeeded ? (
